@@ -11,8 +11,7 @@ public class TermVar extends Term {
 	}
 
 	@Override
-	public
-	boolean unify(Term t) {
+	public boolean unify(Term t) {
 		//if already unified
 		if (instance != this){
 			return instance.unify(t);
@@ -41,5 +40,15 @@ public class TermVar extends Term {
 
 	public int getVarNo() {
 		return varNo;
+	}
+
+	@Override
+	public String print() {
+		if (instance != this){
+			return instance.print();
+		}
+		else{
+			return "_" + varNo;
+		}
 	}
 }

@@ -16,8 +16,12 @@ public class Trail {
 	
 	public static void Undo(Trail whereTo){
 		while(soFar != whereTo){
-			soFar = soFar.tail;
 			soFar.head.reset();
+			soFar = soFar.tail;
 		}
+	}
+	
+	public static Trail note (){
+		return soFar;
 	}
 }

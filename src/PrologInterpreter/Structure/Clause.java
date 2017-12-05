@@ -12,4 +12,12 @@ public class Clause {
 	public Clause copy(){
 		return new Clause(head.copyCons(), body == null ? null : body.copy());
 	}
+	
+	public TermCons getHead(){
+		return head;
+	}
+	
+	public Goal getBody() {
+		return body;
+	}
 }

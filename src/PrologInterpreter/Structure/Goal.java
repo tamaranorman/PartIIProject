@@ -23,6 +23,26 @@ public class Goal {
 		}
 	}
 	
-	//TODO
-	//solve
+	public void solve(Program p, TermVarMapping map){
+		Program q = p;
+		while (q != null){
+			Trail t = Trail.note();
+			Clause c = q.getHead().copy();
+			//undo to last point to get new solutions
+			//not sure need this
+			Trail.Undo(t);
+			if(head.unify(c.getHead())){
+				Goal g = append(c.getBody(), tail);
+				if(g == null) {
+					map.showAnswer();
+				}
+				else{
+					solve(p, map);
+				}
+			}
+			Trail.Undo(t);
+			
+			q = q.getTail();
+		}
+	}
 }

@@ -16,6 +16,9 @@ public class TermCons extends Term{
 		if (t instanceof TermCons){
 			return unifyCons((TermCons) t);
 		}
+		else if (t instanceof TermVar){
+			return ((TermVar)t).unify(this);
+		}
 		return false;
 	}
 
@@ -44,5 +47,18 @@ public class TermCons extends Term{
 			argsCopy[i] = args[i].copy();
 		}
 		return new TermCons(atom, arity, argsCopy);
+	}
+
+	@Override
+	public String print() {
+		String p = atom.getAtomName();
+		if (arity > 0){
+			p += "(";
+			for (int i = 0; i < arity; i++){
+				p += args[i].print();
+			}
+			p += ")";
+		}
+		return p;
 	}
 }
