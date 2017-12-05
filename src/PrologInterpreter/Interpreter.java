@@ -9,5 +9,4 @@ public class Interpreter {
 		//TODO complete interpreter
 		System.out.println("Interpreter reached " + query.toString());
 	}
-
 }
