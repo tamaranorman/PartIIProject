@@ -1,7 +1,7 @@
 package PrologInterpreter.Structure;
 
 public class Atom {
-	final String atomName;
+	private final String atomName;
 	
 	public Atom(String s){
 		atomName = s;

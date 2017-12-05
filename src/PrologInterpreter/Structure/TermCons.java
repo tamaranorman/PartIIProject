@@ -1,9 +1,9 @@
 package PrologInterpreter.Structure;
 
 public class TermCons extends Term{
-	final int arity;
-	final Atom atom;
-	final Term[] args;
+	private final int arity;
+	private final Atom atom;
+	private final Term[] args;
 	
 	public TermCons(Atom a, int arity, Term[] args){
 		atom = a;

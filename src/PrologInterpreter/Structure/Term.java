@@ -1,6 +1,6 @@
 package PrologInterpreter.Structure;
 
 public abstract class Term {
-	abstract boolean unify(Term t);
-	abstract Term copy();
+	public abstract boolean unify(Term t);
+	public abstract Term copy();
 }
