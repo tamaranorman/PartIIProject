@@ -4,9 +4,13 @@ public class Goal {
 	private final TermCons head;
 	private final Goal tail;
 	
-	public Goal(TermCons h, Goal g){
+	public Goal(TermCons h, Goal t){
 		head = h;
-		tail = g;
+		tail = t;
+	}
+	
+	public Goal copy(){
+		return new Goal(head.copyCons(), tail == null ? null : tail.copy());
 	}
 	
 	

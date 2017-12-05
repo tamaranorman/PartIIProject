@@ -38,7 +38,7 @@ public class TermCons extends Term{
 		return copyCons();
 	}
 	
-	private TermCons copyCons() {
+	protected TermCons copyCons() {
 		Term[] argsCopy = new Term[arity];
 		for (int i = 0; i < arity; i ++){
 			argsCopy[i] = args[i].copy();
