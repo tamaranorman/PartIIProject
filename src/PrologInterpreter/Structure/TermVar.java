@@ -13,19 +13,33 @@ public class TermVar extends Term {
 	@Override
 	public
 	boolean unify(Term t) {
-		// TODO Auto-generated method stub
-		return false;
+		//if already unified
+		if (instance != this){
+			return instance.unify(t);
+		}
+		else {
+			Trail.Push(this);
+			instance = t;
+			return true;
+		}
 	}
 
 	@Override
 	public
 	Term copy() {
-		// TODO Auto-generated method stub
-		return null;
+		if(instance == this){
+			Trail.Push(this);
+			instance = new TermVar();
+		}
+		return instance;
 	}
 	
 	public Term reset(){
 		instance = this;
 		return this;
+	}
+
+	public int getVarNo() {
+		return varNo;
 	}
 }
