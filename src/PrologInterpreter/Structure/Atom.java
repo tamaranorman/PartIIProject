@@ -1,4 +1,4 @@
-package PrologInterpreter;
+package PrologInterpreter.Structure;
 
 public class Atom {
 	final String atomName;
