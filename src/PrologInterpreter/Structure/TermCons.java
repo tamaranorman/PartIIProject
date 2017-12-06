@@ -17,7 +17,7 @@ public class TermCons extends Term{
 			return unifyCons((TermCons) t);
 		}
 		else if (t instanceof TermVar){
-			return ((TermVar)t).unify(this);
+			return (t.unify(this));
 		}
 		return false;
 	}

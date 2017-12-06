@@ -20,4 +20,15 @@ public class Clause {
 	public Goal getBody() {
 		return body;
 	}
+	
+	public String print() {
+		String s = head.print();
+		if (body == null){
+			s += " :- true";
+		}
+		else {
+			s += " :- " + body.print();
+		}
+		return s;
+	}
 }
