@@ -36,6 +36,24 @@ public class PrologStructureToStructure {
 		}
 	}
 	
+	public static GoalMappingPair createGoalMapping(AbstractPrologTerm t){
+		varMapping.clear();
+		return new GoalMappingPair(createGoal(t), varMapping);
+	}
+	
+	private static Goal createGoal(AbstractPrologTerm t){
+		if (t.getText().equals(",")){
+			PrologStructure s = (PrologStructure) t;
+			TermCons head = createTermCons(s.getElement(0));
+			Goal tail = createGoal(s.getElement(1));
+			return new Goal(head, tail);
+		}
+		else {
+			TermCons head = createTermCons(t);
+			return new Goal(head, null);
+		}
+	}
+	
 	private static Term createTerm(AbstractPrologTerm t){
 		if (t instanceof PrologVariable){
 			return createVar((PrologVariable) t);
@@ -103,19 +121,6 @@ public class PrologStructureToStructure {
 			TermVar var = new TermVar();
 			varMapping.put(v.getText(), var);
 			return var;
-		}
-	}
-	
-	private static Goal createGoal(AbstractPrologTerm t){
-		if (t.getText().equals(",")){
-			PrologStructure s = (PrologStructure) t;
-			TermCons head = createTermCons(s.getElement(0));
-			Goal tail = createGoal(s.getElement(1));
-			return new Goal(head, tail);
-		}
-		else {
-			TermCons head = createTermCons(t);
-			return new Goal(head, null);
 		}
 	}
 }

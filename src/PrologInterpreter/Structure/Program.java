@@ -2,7 +2,7 @@ package PrologInterpreter.Structure;
 
 public class Program {
 	private final Clause head;
-	private final Program tail;
+	private Program tail;
 	
 	public Program(Clause h, Program t){
 		head = h;
@@ -15,5 +15,11 @@ public class Program {
 
 	public Program getTail() {
 		return tail;
+	}
+	
+	public void setTail(Program t){
+		if (tail == null){
+			tail = t;
+		}
 	}
 }

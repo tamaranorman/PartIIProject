@@ -7,6 +7,7 @@ import com.igormaznitsa.prologparser.exceptions.PrologParserException;
 import com.igormaznitsa.prologparser.terms.PrologStructure;
 
 import PrologInterpreter.Structure.Clause;
+import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.PrologStructureToStructure;
 
 public class Parser {
@@ -16,11 +17,14 @@ public class Parser {
 		parser = new PrologParser(null);
 	}
 	
-	public PrologStructure parseContent(String input) throws IOException, PrologParserException{
-			PrologStructure structure;
-			structure = (PrologStructure) parser.nextSentence(input);
-			Clause c = PrologStructureToStructure.createClause(structure);
-			return structure;  
+	public Clause parseClause(String input) throws IOException, PrologParserException{
+		PrologStructure structure = (PrologStructure) parser.nextSentence(input);
+		return PrologStructureToStructure.createClause(structure); 
+	}
+	
+	public GoalMappingPair parseGoal(String input) throws IOException, PrologParserException{
+		PrologStructure structure = (PrologStructure) parser.nextSentence(input);
+		return PrologStructureToStructure.createGoalMapping(structure);
 	}
 	
 	
