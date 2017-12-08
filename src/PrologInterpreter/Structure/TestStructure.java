@@ -42,7 +42,7 @@ public class TestStructure {
 	String[] n = new String[]{"I", "J"};
 	TermVarMapping map = new TermVarMapping(v, n, 2);
 	
-	g1.solve(test, map);
+	//g1.solve(test, map);
 	
 	}
 	

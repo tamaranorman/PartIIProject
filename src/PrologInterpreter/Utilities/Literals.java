@@ -9,4 +9,7 @@ public class Literals {
 	public static Atom consAtom = new Atom("cons");
 	
 	public static TermCons nilCons = new TermCons(nilAtom, 0, null);
+	
+	public static String ifSeperator = ":-";
+	public static String commaSeperator = ",";
 }

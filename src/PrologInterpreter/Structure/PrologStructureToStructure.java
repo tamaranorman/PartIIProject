@@ -20,7 +20,7 @@ public class PrologStructureToStructure {
 	
 	public static Clause createClause(PrologStructure s) throws PrologParserException{
 		varMapping.clear();
-		if (s.getText().equals(":-")){
+		if (s.getText().equals(Literals.ifSeperator)){
 			AbstractPrologTerm t = s.getElement(0);
 			if (s.getElement(0) instanceof PrologStructure){
 				TermCons lhs = createTermCons((PrologStructure) t);
@@ -44,7 +44,7 @@ public class PrologStructureToStructure {
 	}
 	
 	private static Goal createGoal(AbstractPrologTerm t){
-		if (t.getText().equals(",")){
+		if (t.getText().equals(Literals.commaSeperator)){
 			PrologStructure s = (PrologStructure) t;
 			TermCons head = createTermCons(s.getElement(0));
 			Goal tail = createGoal(s.getElement(1));

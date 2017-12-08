@@ -22,34 +22,6 @@ public class Goal {
 			return new Goal(l.head, append(l.tail, m));
 		}
 	}
-	
-	public void solve(Program p, TermVarMapping map){
-		Program q = p;
-		while (q != null){
-			Trail t = Trail.note();
-			Clause c = q.getHead().copy();
-			//undo to last point to get new solutions
-			//not sure need this
-			Trail.Undo(t);
-			//System.out.println("Try " + c.print());
-			//System.out.println(this.print());
-			if(head.unify(c.getHead())){
-				Goal g = append(c.getBody(), tail);
-				if(g == null) {
-					map.showAnswer();
-				}
-				else{
-					g.solve(p, map);
-				}
-			}
-			else{
-				System.out.println("false.");
-			}
-			Trail.Undo(t);
-			
-			q = q.getTail();
-		}
-	}
 
 	public String print() {
 		String s = head.print();
@@ -57,5 +29,13 @@ public class Goal {
 			s += tail.print();
 		}
 		return s;
+	}
+	
+	public TermCons getHead() {
+		return head;
+	}
+
+	public Goal getTail() {
+		return tail;
 	}
 }
