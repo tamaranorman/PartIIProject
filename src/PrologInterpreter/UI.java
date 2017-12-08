@@ -11,7 +11,7 @@ public class UI {
 
 	public static void main(String[] args) throws IOException {
 		Parser parser = new Parser();
-		Interpreter interpreter = new Interpreter();
+		Interpreter interpreter = new SingleThreadedInterpreter();
 		Scanner scanner = new Scanner(System.in);
 		
 		System.out.println("Welcome to my prolog interpreter:");

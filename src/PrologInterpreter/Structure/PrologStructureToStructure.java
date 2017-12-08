@@ -1,5 +1,7 @@
 package PrologInterpreter.Structure;
 
+import PrologInterpreter.Utilities.Literals;
+
 import java.util.HashMap;
 
 import com.igormaznitsa.prologparser.exceptions.PrologParserException;
@@ -92,14 +94,14 @@ public class PrologStructureToStructure {
 	
 	private static TermCons createTermCons(PrologList l){
 		if(l.isNullList()){
-			return new TermCons(new Atom("nil"), 0 ,null);
+			return Literals.nilCons;
 		}
 		else if(l.getTail().equals(null)){
-			return new TermCons(new Atom("cons"), 2, new Term[]{createTerm(l.getHead()), 
-																	new TermCons(new Atom("nil"), 0 ,null)});
+			return new TermCons(Literals.consAtom, 2, new Term[]{createTerm(l.getHead()), 
+																 Literals.nilCons});
 		}
 		else {
-			return new TermCons(new Atom("cons"), 2, new Term[]{createTerm(l.getHead()), 
+			return new TermCons(Literals.consAtom, 2, new Term[]{createTerm(l.getHead()), 
 																createTerm(l.getTail())});
 		}
 	}
