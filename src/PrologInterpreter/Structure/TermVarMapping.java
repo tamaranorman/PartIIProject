@@ -18,7 +18,7 @@ public class TermVarMapping {
 		}
 		else {
 			for(int i = 0; i < size-1; i++){
-				System.out.println(vText[i] + " = " + vVar[i].print() + "'");
+				System.out.println(vText[i] + " = " + vVar[i].print() + ",");
 			}
 			System.out.println(vText[size -1] + " = " + vVar[size -1].print() + ";");
 		}

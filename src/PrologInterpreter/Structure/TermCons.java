@@ -1,5 +1,7 @@
 package PrologInterpreter.Structure;
 
+import PrologInterpreter.Utilities.Literals;
+
 public class TermCons extends Term{
 	private final int arity;
 	private final Atom atom;
@@ -51,6 +53,9 @@ public class TermCons extends Term{
 
 	@Override
 	public String print() {
+		if (atom == Literals.consAtom){
+			return "[" + printList();
+		}
 		String p = atom.getAtomName();
 		if (arity > 0){
 			p += "(";
@@ -60,5 +65,36 @@ public class TermCons extends Term{
 			p += ")";
 		}
 		return p;
+	}
+	
+	private String printList() {
+		if (isNilTerm(args[1])){
+			return args[0].print() + "]";
+		}
+		else {
+			if (args[1] instanceof TermCons){
+				return args[0].print() + "," + ((TermCons)args[1]).printList();
+			}
+			else {
+				if (args[1].print().startsWith("[")){
+					return args[0].print() + "," + args[1].print().substring(1);
+				}
+				return args[0].print() + "|" + args[1].print() + "]";
+			}
+		}
+	}
+
+	private boolean isNilTerm(Term term) {
+		if (term instanceof TermVar){
+			if(term.print().equals(Literals.nilString)){
+				return true;
+			}
+		}
+		if (term instanceof TermCons){
+			if (term == Literals.nilCons){
+				return true;
+			}
+		}
+		return false;
 	}
 }
