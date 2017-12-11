@@ -1,18 +1,17 @@
 package PrologInterpreter.Structure.StructureCreators;
 
-import java.util.HashMap;
-
 import com.igormaznitsa.prologparser.terms.PrologVariable;
 
 import PrologInterpreter.Structure.TermVar;
+import PrologInterpreter.Structure.TermVarMapping;
 
 public class TermVarCreator {
-	private HashMap<String, TermVar> varMapping;
+	private TermVarMapping varMapping;
 	
-	public TermVarCreator(HashMap<String, TermVar> m){
-		varMapping = m;
+	public TermVarCreator(TermVarMapping v){
+		varMapping = v;
 	}
-	
+
 	public TermVar createVar(PrologVariable v){
 		if (varMapping.containsKey(v.getText())){
 			return varMapping.get(v.getText());

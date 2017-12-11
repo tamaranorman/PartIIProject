@@ -38,9 +38,9 @@ public class TestStructure {
 	
 	Program test = new Program(c1, new Program(c2, null));
 	
-	TermVar[] v = new TermVar[]{v_i, v_j};
-	String[] n = new String[]{"I", "J"};
-	TermVarMapping map = new TermVarMapping(v, n, 2);
+	//TermVar[] v = new TermVar[]{v_i, v_j};
+	//String[] n = new String[]{"I", "J"};
+	//TermVarMapping map = new TermVarMapping(v, n, 2);
 	
 	//g1.solve(test, map);
 	

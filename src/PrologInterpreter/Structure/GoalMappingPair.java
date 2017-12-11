@@ -1,12 +1,10 @@
 package PrologInterpreter.Structure;
 
-import java.util.HashMap;
-
 public class GoalMappingPair {
 	private final Goal goal;
-	private final HashMap<String, TermVar> map;
+	private final TermVarMapping map;
 	
-	public GoalMappingPair (Goal g, HashMap<String, TermVar> m){
+	public GoalMappingPair (Goal g, TermVarMapping m){
 		goal = g;
 		map = m;
 	}
@@ -16,7 +14,6 @@ public class GoalMappingPair {
 	}
 
 	public TermVarMapping getMap() {
-		
-		return new TermVarMapping(map);
+		return map;
 	}
 }

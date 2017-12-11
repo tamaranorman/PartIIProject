@@ -3,15 +3,13 @@ package PrologInterpreter.Structure;
 import PrologInterpreter.Utilities.Literals;
 import PrologInterpreter.Structure.StructureCreators.TermCreator;
 
-import java.util.HashMap;
-
 import com.igormaznitsa.prologparser.exceptions.PrologParserException;
 import com.igormaznitsa.prologparser.terms.AbstractPrologTerm;
 import com.igormaznitsa.prologparser.terms.PrologStructure;
 
 public class PrologStructureToStructure {
 
-	private static HashMap<String, TermVar> varMapping = new HashMap<String, TermVar>();
+	private static TermVarMapping varMapping = new TermVarMapping();
 	private static TermCreator termCreator = new TermCreator(varMapping);
 	
 	public static Clause createClause(PrologStructure s) throws PrologParserException{

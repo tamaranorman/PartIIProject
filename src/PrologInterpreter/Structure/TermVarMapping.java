@@ -5,15 +5,13 @@ import java.util.HashMap;
 public class TermVarMapping {
 
 	private HashMap<String, TermVar> map;
-
-	private int size;
 	
-	public TermVarMapping(HashMap<String, TermVar> m){
-		map = m;
-		size = m.size();
+	public TermVarMapping(){
+		map = new HashMap<String, TermVar>();
 	}
 	
 	public void showAnswer(){
+		int size = map.size();
 		String[] values = map.keySet().toArray(new String[size]);
 		if (size == 0){
 			System.out.println("yes");
@@ -24,5 +22,21 @@ public class TermVarMapping {
 			}
 			System.out.println(values[size -1] + " = " + map.get(values[size -1]).print() + ";");
 		}
+	}
+
+	public void clear() {
+		map.clear();
+	}
+
+	public boolean containsKey(String text) {
+		return map.containsKey(text);
+	}
+
+	public TermVar get(String text) {
+		return map.get(text);
+	}
+
+	public void put(String text, TermVar var) {
+		map.put(text, var);
 	}
 }

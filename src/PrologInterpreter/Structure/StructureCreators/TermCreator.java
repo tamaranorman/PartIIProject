@@ -1,20 +1,19 @@
 package PrologInterpreter.Structure.StructureCreators;
 
-import java.util.HashMap;
-
 import com.igormaznitsa.prologparser.terms.AbstractPrologTerm;
 import com.igormaznitsa.prologparser.terms.PrologVariable;
 
 import PrologInterpreter.Structure.Term;
 import PrologInterpreter.Structure.TermCons;
 import PrologInterpreter.Structure.TermVar;
+import PrologInterpreter.Structure.TermVarMapping;
 
 public class TermCreator {
 	private TermVarCreator varCreator;
 	private TermConsCreator consCreator;
 
-	public TermCreator(HashMap<String, TermVar> m){
-		varCreator = new TermVarCreator(m);
+	public TermCreator(TermVarMapping varMapping){
+		varCreator = new TermVarCreator(varMapping);
 		consCreator = new TermConsCreator(this);
 	}
 	
