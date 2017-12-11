@@ -9,6 +9,16 @@ public class TermVar extends Term {
 		instance = this;
 		varNo = timeStamp++;
 	}
+	
+	public TermVar(int n){
+		instance = this;
+		varNo = n;
+	}
+	
+	public TermVar(Term i, int n) {
+		instance = i;
+		varNo = n;
+	}
 
 	@Override
 	public boolean unify(Term t) {
@@ -24,13 +34,20 @@ public class TermVar extends Term {
 	}
 
 	@Override
-	public
-	Term copy() {
+	public Term copy() {
 		if(instance == this){
 			Trail.Push(this);
 			instance = new TermVar();
 		}
 		return instance;
+	}
+
+	@Override
+	public Term spawnCopy() {
+		if (instance == this){
+			return new TermVar(varNo);
+		}
+		return new TermVar(instance.spawnCopy(), varNo);
 	}
 	
 	public Term reset(){

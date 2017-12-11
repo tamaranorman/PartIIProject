@@ -13,6 +13,9 @@ public class Goal {
 		return new Goal(head.copyCons(), tail == null ? null : tail.copy());
 	}
 	
+	public Goal spawnCopy() {
+		return new Goal(head.spawnCopyCons(), tail == null ? null : tail.spawnCopy());
+	}
 	
 	public static Goal append(Goal l, Goal m){
 		if (l == null){

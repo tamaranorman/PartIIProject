@@ -43,10 +43,23 @@ public class TermCons extends Term{
 		return copyCons();
 	}
 	
+	@Override
+	public Term spawnCopy() {
+		return spawnCopyCons();
+	}
+	
 	protected TermCons copyCons() {
 		Term[] argsCopy = new Term[arity];
 		for (int i = 0; i < arity; i ++){
 			argsCopy[i] = args[i].copy();
+		}
+		return new TermCons(atom, arity, argsCopy);
+	}
+	
+	protected TermCons spawnCopyCons() {
+		Term[] argsCopy = new Term[arity];
+		for (int i = 0; i < arity; i ++){
+			argsCopy[i] = args[i].spawnCopy();
 		}
 		return new TermCons(atom, arity, argsCopy);
 	}
