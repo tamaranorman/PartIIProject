@@ -16,12 +16,7 @@ public class GoalMappingPair {
 	}
 
 	public TermVarMapping getMap() {
-		int size = map.size();
-		String[] values = map.keySet().toArray(new String[size]);
-		TermVar[] vars = new TermVar[values.length];
-		for(int i = 0; i < size; i++){
-			vars[i] = map.get(values[i]);
-		}
-		return new TermVarMapping(vars, values, values.length);
+		
+		return new TermVarMapping(map);
 	}
 }
