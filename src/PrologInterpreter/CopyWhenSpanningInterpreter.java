@@ -17,21 +17,22 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 		Program q = program;
 		while (q != null){
 			Clause c = q.getHead().copy();
-			final Goal g = goal.spawnCopy();
+			TermVarMapping m = new TermVarMapping(map);
+			final Goal g = goal.spawnCopy(m);
+			//need to now edit map
 			if(g.getHead().unify(c.getHead())){
 				final Goal h = Goal.append(c.getBody(), g.getTail());
 				if(h == null) {
-					map.showAnswer();
+					m.showAnswer();
 				}
 				else{
 					Thread worker = new Thread() {
 						@Override 
 						public void run(){
 							System.out.println("New thread reached");
-							solve(h, program, map);
+							solve(h, program, m);
 						}
 					};
-					worker.setDaemon(true);
 					worker.start();
 				}
 			}

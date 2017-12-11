@@ -13,8 +13,8 @@ public class Goal {
 		return new Goal(head.copyCons(), tail == null ? null : tail.copy());
 	}
 	
-	public Goal spawnCopy() {
-		return new Goal(head.spawnCopyCons(), tail == null ? null : tail.spawnCopy());
+	public Goal spawnCopy(TermVarMapping m) {
+		return new Goal(head.spawnCopyCons(m), tail == null ? null : tail.spawnCopy(m));
 	}
 	
 	public static Goal append(Goal l, Goal m){

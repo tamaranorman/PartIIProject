@@ -44,8 +44,8 @@ public class TermCons extends Term{
 	}
 	
 	@Override
-	public Term spawnCopy() {
-		return spawnCopyCons();
+	public Term spawnCopy(TermVarMapping m) {
+		return spawnCopyCons(m);
 	}
 	
 	protected TermCons copyCons() {
@@ -56,10 +56,10 @@ public class TermCons extends Term{
 		return new TermCons(atom, arity, argsCopy);
 	}
 	
-	protected TermCons spawnCopyCons() {
+	protected TermCons spawnCopyCons(TermVarMapping m) {
 		Term[] argsCopy = new Term[arity];
 		for (int i = 0; i < arity; i ++){
-			argsCopy[i] = args[i].spawnCopy();
+			argsCopy[i] = args[i].spawnCopy(m);
 		}
 		return new TermCons(atom, arity, argsCopy);
 	}
@@ -104,7 +104,7 @@ public class TermCons extends Term{
 			}
 		}
 		if (term instanceof TermCons){
-			if (term == Literals.nilCons){
+			if (term.print().equals(Literals.nilString)){
 				return true;
 			}
 		}

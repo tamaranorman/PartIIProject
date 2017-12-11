@@ -43,11 +43,18 @@ public class TermVar extends Term {
 	}
 
 	@Override
-	public Term spawnCopy() {
+	public Term spawnCopy(TermVarMapping m) {
+		TermVar t;
 		if (instance == this){
-			return new TermVar(varNo);
+			t = new TermVar(varNo);
 		}
-		return new TermVar(instance.spawnCopy(), varNo);
+		else{
+			t = new TermVar(instance.spawnCopy(m), varNo);
+		}
+		if (m.containsValue(this)){
+			m.replace(this, t);
+		}
+		return t;
 	}
 	
 	public Term reset(){
