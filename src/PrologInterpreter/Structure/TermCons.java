@@ -1,5 +1,7 @@
 package PrologInterpreter.Structure;
 
+import java.util.HashMap;
+
 import PrologInterpreter.Utilities.Literals;
 
 public class TermCons extends Term{
@@ -47,6 +49,11 @@ public class TermCons extends Term{
 	public Term spawnCopy(TermVarMapping m) {
 		return spawnCopyCons(m);
 	}
+
+	@Override
+	public Term deepCopy(HashMap<Term, Term> map) {
+		return deepCopyCons(map);
+	}
 	
 	protected TermCons copyCons() {
 		Term[] argsCopy = new Term[arity];
@@ -60,6 +67,24 @@ public class TermCons extends Term{
 		Term[] argsCopy = new Term[arity];
 		for (int i = 0; i < arity; i ++){
 			argsCopy[i] = args[i].spawnCopy(m);
+		}
+		return new TermCons(atom, arity, argsCopy);
+	}
+	
+	public <Terms> TermCons deepCopyCons(HashMap<Term, Term> map) {
+		if (arity == 0){
+			return new TermCons(atom, 0, null);
+		}
+		Term[] argsCopy = new Term[arity];
+		for (int i = 0; i < arity; i ++){
+			if (map.containsKey(args[i])){
+				argsCopy[i] = map.get(args[i]);
+			}
+			else{
+				Term t = args[i].deepCopy(map);
+				map.put(args[i], t);
+				argsCopy[i] = t;
+			}
 		}
 		return new TermCons(atom, arity, argsCopy);
 	}
@@ -106,6 +131,26 @@ public class TermCons extends Term{
 		if (term instanceof TermCons){
 			if (term.print().equals(Literals.nilString)){
 				return true;
+			}
+		}
+		return false;
+	}
+
+	public Term[] getArgs() {
+		return args;
+	}
+
+	public boolean contains(TermVar instance) {
+		for(int i = 0; i < arity; i++){
+			if (args[i] instanceof TermVar){
+				if (((TermVar)args[i]).equalsVar(instance) != -1){
+					return true;
+				}
+			}
+			else if (args[i] instanceof TermCons){
+				if (((TermCons)args[i]).contains(instance)){
+					return true;
+				}
 			}
 		}
 		return false;

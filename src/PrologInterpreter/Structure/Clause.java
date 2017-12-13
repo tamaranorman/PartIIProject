@@ -1,5 +1,7 @@
 package PrologInterpreter.Structure;
 
+import java.util.HashMap;
+
 public class Clause {
 	private final TermCons head;
 	private final Goal body;
@@ -30,5 +32,10 @@ public class Clause {
 			s += " :- " + body.print();
 		}
 		return s;
+	}
+
+	public Clause deepCopy() {
+		HashMap<Term, Term> map = new HashMap<>();
+		return new Clause(head.deepCopyCons(map), body == null ? null : body.deepCopy(map));
 	}
 }

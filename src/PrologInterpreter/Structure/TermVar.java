@@ -1,5 +1,7 @@
 package PrologInterpreter.Structure;
 
+import java.util.HashMap;
+
 public class TermVar extends Term {
 	private static int timeStamp;
 	private final int varNo;
@@ -51,10 +53,19 @@ public class TermVar extends Term {
 		else{
 			t = new TermVar(instance.spawnCopy(m), varNo);
 		}
-		if (m.containsValue(this)){
-			m.replace(this, t);
-		}
+		m.replace(t);
 		return t;
+	}
+
+	@Override
+	public Term deepCopy(HashMap<Term, Term> map) {
+		if (map.containsKey(this)){
+			return map.get(this);
+		}
+		if (instance == this){
+			return new TermVar();
+		}
+		return new TermVar(instance.deepCopy(map), timeStamp++);
 	}
 	
 	public Term reset(){
@@ -74,5 +85,30 @@ public class TermVar extends Term {
 		else{
 			return "_" + varNo;
 		}
+	}
+
+	public int equalsVar(TermVar termVar) {
+		if (this == termVar){
+			return 0;
+		}
+		if (instance == this && termVar.instance == termVar){
+			return (this == termVar)? 0 : -1;
+		}
+		if (instance == this && termVar.instance instanceof TermCons){
+			return ((TermCons)(termVar.instance)).contains((TermVar)instance) ? 1 : -1;
+		}
+		if (instance == this){
+			return (termVar.equalsVar(this));
+		}
+		if (instance instanceof TermCons && termVar.instance instanceof TermCons){
+			return (instance == termVar.instance) ? 0 : -1;
+		}
+		if (instance instanceof TermCons){
+			return termVar.equalsVar(this);
+		}
+		if (instance instanceof TermVar){
+			return ((TermVar)instance).equalsVar(termVar);
+		}
+		return -1;
 	}
 }

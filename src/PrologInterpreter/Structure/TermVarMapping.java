@@ -57,24 +57,29 @@ public class TermVarMapping {
 		map.put(text, var);
 	}
 
-	public void replace(TermVar termVar, TermVar t) {
+	public void replace(TermVar termVar) {
 		int size = map.size();
 		String[] values = map.keySet().toArray(new String[size]);
 		for(String v : values){
-			if(map.get(v) == termVar){
+			TermVar t = map.get(v);
+			if(map.get(v).equalsVar(termVar) == 0){
 				map.replace(v, t);
+			}
+			if(map.get(v).equalsVar(termVar) == 1){
+				//This is wrong
+				//t.spawnCopy(this);
 			}
 		}
 	}
 
-	public boolean containsValue(TermVar termVar) {
+	/*public boolean containsValue(TermVar termVar) {
 		int size = map.size();
 		String[] values = map.keySet().toArray(new String[size]);
 		for(String v : values){
-			if(map.get(v) == termVar){
+			if(map.get(v).equalsVar(termVar)){
 				return true;
 			}
 		}
 		return false;
-	}
+	}*/
 }

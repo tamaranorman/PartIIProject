@@ -1,5 +1,7 @@
 package PrologInterpreter.Structure;
 
+import java.util.HashMap;
+
 public class Goal {
 	private final TermCons head;
 	private final Goal tail;
@@ -15,6 +17,10 @@ public class Goal {
 	
 	public Goal spawnCopy(TermVarMapping m) {
 		return new Goal(head.spawnCopyCons(m), tail == null ? null : tail.spawnCopy(m));
+	}
+	
+	public Goal deepCopy(HashMap<Term, Term> map) {
+		return new Goal(head.deepCopyCons(map), tail == null ? null : tail.deepCopy(map));
 	}
 	
 	public static Goal append(Goal l, Goal m){

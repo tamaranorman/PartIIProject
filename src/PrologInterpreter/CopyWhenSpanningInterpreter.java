@@ -13,13 +13,12 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 		solve(query.getGoal(), rules, query.getMap());
 	}
 
-	private void solve(Goal goal, Program program, TermVarMapping map) {
+	private void solve(Goal goal, final Program program, TermVarMapping map) {
 		Program q = program;
 		while (q != null){
-			Clause c = q.getHead().copy();
-			TermVarMapping m = new TermVarMapping(map);
+			Clause c = q.getHead().deepCopy();
+			final TermVarMapping m = new TermVarMapping(map);
 			final Goal g = goal.spawnCopy(m);
-			//need to now edit map
 			if(g.getHead().unify(c.getHead())){
 				final Goal h = Goal.append(c.getBody(), g.getTail());
 				if(h == null) {
