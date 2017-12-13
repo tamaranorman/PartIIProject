@@ -53,7 +53,7 @@ public class TermVar extends Term {
 		else{
 			t = new TermVar(instance.spawnCopy(m), varNo);
 		}
-		m.replace(t);
+		m.replace(this, t);
 		return t;
 	}
 
@@ -87,21 +87,21 @@ public class TermVar extends Term {
 		}
 	}
 
-	public int equalsVar(TermVar termVar) {
+	public boolean equalsVar(TermVar termVar) {
 		if (this == termVar){
-			return 0;
+			return true;
 		}
 		if (instance == this && termVar.instance == termVar){
-			return (this == termVar)? 0 : -1;
+			return (this == termVar);
 		}
 		if (instance == this && termVar.instance instanceof TermCons){
-			return ((TermCons)(termVar.instance)).contains((TermVar)instance) ? 1 : -1;
+			return ((TermCons)(termVar.instance)).contains((TermVar)instance);
 		}
 		if (instance == this){
 			return (termVar.equalsVar(this));
 		}
 		if (instance instanceof TermCons && termVar.instance instanceof TermCons){
-			return (instance == termVar.instance) ? 0 : -1;
+			return (instance == termVar.instance);
 		}
 		if (instance instanceof TermCons){
 			return termVar.equalsVar(this);
@@ -109,6 +109,6 @@ public class TermVar extends Term {
 		if (instance instanceof TermVar){
 			return ((TermVar)instance).equalsVar(termVar);
 		}
-		return -1;
+		return false;
 	}
 }

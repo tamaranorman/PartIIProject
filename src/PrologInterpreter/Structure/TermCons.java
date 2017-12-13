@@ -143,7 +143,7 @@ public class TermCons extends Term{
 	public boolean contains(TermVar instance) {
 		for(int i = 0; i < arity; i++){
 			if (args[i] instanceof TermVar){
-				if (((TermVar)args[i]).equalsVar(instance) != -1){
+				if (((TermVar)args[i]).equalsVar(instance)){
 					return true;
 				}
 			}
