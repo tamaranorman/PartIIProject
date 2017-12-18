@@ -63,7 +63,12 @@ public class TermVarMapping {
 		for(String v : values){
 			TermVar t = map.get(v);
 			if(t.equalsVar(termVar)){
-				map.replace(v, newTerm);
+				if (t.isUnunified()){
+					map.replace(v, newTerm);
+				}
+				else {
+					t.replace(termVar, newTerm);
+				}
 			}
 			/*if(map.get(v).equalsVar(termVar) == 1){
 				//This is wrong

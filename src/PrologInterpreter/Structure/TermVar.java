@@ -111,4 +111,15 @@ public class TermVar extends Term {
 		}
 		return false;
 	}
+
+	public boolean isUnunified() {
+		return (instance == this);
+	}
+
+	@Override
+	public void replace(TermVar termVar, TermVar newTerm) {
+		if (instance != this){
+			instance.replace(termVar, newTerm);
+		}
+	}
 }

@@ -155,4 +155,16 @@ public class TermCons extends Term{
 		}
 		return false;
 	}
+
+	@Override
+	public void replace(TermVar termVar, TermVar newTerm) {
+		for (int i = 0; i < arity; i++){
+			if (args[i] == termVar){
+				args[i] = newTerm;
+			}
+			else {
+				args[i].replace(termVar, newTerm);
+			}
+		}
+	}
 }
