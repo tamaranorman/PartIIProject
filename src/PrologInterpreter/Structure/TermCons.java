@@ -160,4 +160,9 @@ public class TermCons extends Term{
 			}
 		}
 	}
+
+	public boolean unifySharing(TermCons head) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
