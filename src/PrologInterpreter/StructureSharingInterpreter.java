@@ -5,32 +5,32 @@ import PrologInterpreter.Structure.Goal;
 import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
 import PrologInterpreter.Structure.TermVarMapping;
-import PrologInterpreter.Structure.UnificationList;
+import PrologInterpreter.Structure.UnificationListHolder;
 
 public class StructureSharingInterpreter implements Interpreter{
 
 	@Override
 	public void executeQuery(GoalMappingPair query, Program rules) {
-		solve(query.getGoal(), rules, query.getMap(), new UnificationList());
+		solve(query.getGoal(), rules, query.getMap(), new UnificationListHolder());
 	}
 	
-	private void solve (Goal goal, Program program, TermVarMapping map, UnificationList list){
+	private void solve (Goal goal, Program program, TermVarMapping map, UnificationListHolder list){
 		Program q = program;
 		while (q != null){
 			Clause c = q.getHead().deepCopy();
 			final Goal g = goal.copy();
-			UnificationList extendedList = g.getHead().unifySharing(c.getHead(), list);
-			if(extendedList != list){
+			UnificationListHolder l = new UnificationListHolder(list.getList());
+			if(g.getHead().unifySharing(c.getHead(), l)){
 				Goal h = Goal.append(c.getBody(), goal.getTail());
 				if(h == null) {
-					map.showAnswer(extendedList);
+					map.showAnswer(l.getList());
 				}
 				else{
 					Thread worker = new Thread() {
 						@Override 
 						public void run(){
 							System.out.println("New thread reached");
-							solve(h, program, map, extendedList);
+							solve(h, program, map, l);
 						}
 					};
 					worker.start();

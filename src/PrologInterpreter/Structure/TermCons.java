@@ -39,6 +39,25 @@ public class TermCons extends Term{
 			return false;
 		}
 	}
+	
+	@Override
+	public boolean unifySharing (Term t, UnificationListHolder list) {
+		return false;
+	}
+	
+	public boolean unifyConsSharing(TermCons t, UnificationListHolder list) {
+		if (t.arity == arity && t.atom.equals(atom)){
+			for(int i = 0; i < arity; i ++){
+				if(!args[i].unify(t.args[i])){
+					return false;
+				}
+			}
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
 	@Override
 	public Term copy() {
@@ -193,10 +212,5 @@ public class TermCons extends Term{
 				args[i].replace(termVar, newTerm);
 			}
 		}
-	}
-
-	public UnificationList unifySharing(TermCons head, UnificationList list) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

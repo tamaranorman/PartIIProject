@@ -137,4 +137,10 @@ public class TermVar extends Term {
 			instance.replace(termVar, newTerm);
 		}
 	}
+
+	@Override
+	public boolean unifySharing(Term t, UnificationListHolder list) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
