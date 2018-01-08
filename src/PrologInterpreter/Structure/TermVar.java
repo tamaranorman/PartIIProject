@@ -34,6 +34,18 @@ public class TermVar extends Term {
 			return true;
 		}
 	}
+	
+	@Override
+	public boolean unifySharing(Term t, UnificationListHolder holder, UnificationList list) {
+		if(this.equals(list.getVar())){//Need to make no not value
+			return list.getValue().unifySharing(t, holder, list.getPrev());
+		}
+		if (list.getPrev() == null){
+			holder.addToList(this, t);
+			return true;
+		}
+		return unifySharing(t, holder, list.getPrev());
+	}
 
 	@Override
 	public Term copy() {
@@ -90,15 +102,15 @@ public class TermVar extends Term {
 	}
 	
 	@Override
-	public String print(UnificationList list) {
+	public String print(UnificationList list, UnificationListHolder fixedList) {
 		if(list.getVar() == null){
 			return "_" + varNo;
 		}
 		if (list.getVar().getVarNo() == varNo){
-			return list.getValue().print(list.getPrev());
+			return list.getValue().print(fixedList.getList(), fixedList);
 		}
 		else{
-			return print(list.getPrev());
+			return print(list.getPrev(), fixedList);
 		}
 	}
 
@@ -136,11 +148,5 @@ public class TermVar extends Term {
 		if (instance != this){
 			instance.replace(termVar, newTerm);
 		}
-	}
-
-	@Override
-	public boolean unifySharing(Term t, UnificationListHolder list) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

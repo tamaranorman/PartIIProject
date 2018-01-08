@@ -9,6 +9,6 @@ public abstract class Term {
 	public abstract String print();
 	public abstract Term deepCopy(HashMap<Term, Term> map);
 	public abstract void replace(TermVar termVar, TermVar newTerm);
-	public abstract String print(UnificationList prev);
-	public abstract boolean unifySharing(Term t, UnificationListHolder list);
+	public abstract String print(UnificationList list, UnificationListHolder fixedList);
+	public abstract boolean unifySharing(Term t, UnificationListHolder holder, UnificationList list);
 }

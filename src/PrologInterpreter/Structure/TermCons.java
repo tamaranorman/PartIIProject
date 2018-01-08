@@ -41,14 +41,20 @@ public class TermCons extends Term{
 	}
 	
 	@Override
-	public boolean unifySharing (Term t, UnificationListHolder list) {
+	public boolean unifySharing (Term t, UnificationListHolder holder, UnificationList list) {
+		if (t instanceof TermCons){
+			return unifyConsSharing((TermCons) t, holder, list);
+		}
+		else if (t instanceof TermVar){
+			return t.unifySharing(this, holder, list);
+		}
 		return false;
 	}
 	
-	public boolean unifyConsSharing(TermCons t, UnificationListHolder list) {
+	public boolean unifyConsSharing(TermCons t, UnificationListHolder holder, UnificationList list) {
 		if (t.arity == arity && t.atom.equals(atom)){
 			for(int i = 0; i < arity; i ++){
-				if(!args[i].unify(t.args[i])){
+				if(!args[i].unifySharing(t.args[i], holder, list)){
 					return false;
 				}
 			}
@@ -119,15 +125,15 @@ public class TermCons extends Term{
 
 
 	@Override
-	public String print(UnificationList list) {
+	public String print(UnificationList list, UnificationListHolder fixedList) {
 		if (atom == Literals.consAtom){
-			return "[" + printList(list);
+			return "[" + printList(list, fixedList);
 		}
 		String p = atom.getAtomName();
 		if (arity > 0){
 			p += "(";
 			for (int i = 0; i < arity; i++){
-				p += args[i].print(list);
+				p += args[i].print(list, fixedList);
 			}
 			p += ")";
 		}
@@ -151,19 +157,20 @@ public class TermCons extends Term{
 		}
 	}
 	
-	private String printList(UnificationList list) {
-		if (isNilTerm(args[1])){
-			return args[0].print(list) + "]";
+	private String printList(UnificationList list, UnificationListHolder fixedList) {
+		if (isNilTerm(args[1], list, fixedList)){
+			return args[0].print(list, fixedList) + "]";
 		}
 		else {
 			if (args[1] instanceof TermCons){
-				return args[0].print(list) + "," + ((TermCons)args[1]).printList(list);
+				return args[0].print(list, fixedList) + "," + ((TermCons)args[1]).printList(list, fixedList);
 			}
 			else {
-				if (args[1].print().startsWith("[")){
-					return args[0].print(list) + "," + args[1].print(list).substring(1);
+				String arg1 = args[1].print(list, fixedList);
+				if (arg1.startsWith("[")){
+					return args[0].print(list, fixedList) + "," + arg1.substring(1);
 				}
-				return args[0].print(list) + "|" + args[1].print(list) + "]";
+				return args[0].print(list, fixedList) + "|" + arg1 + "]";
 			}
 		}
 	}
@@ -176,6 +183,20 @@ public class TermCons extends Term{
 		}
 		if (term instanceof TermCons){
 			if (term.print().equals(Literals.nilString)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean isNilTerm(Term term, UnificationList list, UnificationListHolder fixedList) {
+		if (term instanceof TermVar){
+			if(term.print(list, fixedList).equals(Literals.nilString)){
+				return true;
+			}
+		}
+		if (term instanceof TermCons){
+			if (term.print(list, fixedList).equals(Literals.nilString)){
 				return true;
 			}
 		}

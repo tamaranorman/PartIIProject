@@ -18,12 +18,12 @@ public class StructureSharingInterpreter implements Interpreter{
 		Program q = program;
 		while (q != null){
 			Clause c = q.getHead().deepCopy();
-			final Goal g = goal.copy();
+			final Goal g = goal.shallowCopy();
 			UnificationListHolder l = new UnificationListHolder(list.getList());
-			if(g.getHead().unifySharing(c.getHead(), l)){
+			if(g.getHead().unifySharing(c.getHead(), l, l.getList())){
 				Goal h = Goal.append(c.getBody(), goal.getTail());
 				if(h == null) {
-					map.showAnswer(l.getList());
+					map.showAnswer(l);
 				}
 				else{
 					Thread worker = new Thread() {

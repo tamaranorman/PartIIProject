@@ -42,7 +42,7 @@ public class TermVarMapping {
 		}
 	}
 	
-	public void showAnswer(UnificationList list) {
+	public void showAnswer(UnificationListHolder holder) {
 		int size = map.size();
 		String[] values = map.keySet().toArray(new String[size]);
 		if (size == 0){
@@ -50,9 +50,9 @@ public class TermVarMapping {
 		}
 		else {
 			for(int i = 0; i < size-1; i++){
-				System.out.println(values[i] + " = " + map.get(values[i]).print(list) + ",");
+				System.out.println(values[i] + " = " + map.get(values[i]).print(holder.getList(), holder) + ",");
 			}
-			System.out.println(values[size -1] + " = " + map.get(values[size -1]).print(list) + ";");
+			System.out.println(values[size -1] + " = " + map.get(values[size -1]).print(holder.getList(), holder) + ";");
 		}
 	}
 

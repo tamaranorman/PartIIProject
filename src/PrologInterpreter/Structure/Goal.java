@@ -15,6 +15,10 @@ public class Goal {
 		return new Goal(head.copyCons(), tail == null ? null : tail.copy());
 	}
 	
+	public Goal shallowCopy(){
+		return new Goal(head, tail == null ? null : tail.shallowCopy());
+	}
+	
 	public Goal spawnCopy(TermVarMapping m) {
 		return new Goal(head.spawnCopyCons(m), tail == null ? null : tail.spawnCopy(m));
 	}
