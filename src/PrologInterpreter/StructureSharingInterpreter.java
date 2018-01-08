@@ -23,7 +23,7 @@ public class StructureSharingInterpreter implements Interpreter{
 			if(extendedList != list){
 				Goal h = Goal.append(c.getBody(), goal.getTail());
 				if(h == null) {
-					map.showAnswer();
+					map.showAnswer(extendedList);
 				}
 				else{
 					Thread worker = new Thread() {

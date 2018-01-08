@@ -97,6 +97,23 @@ public class TermCons extends Term{
 		}
 		return p;
 	}
+
+
+	@Override
+	public String print(UnificationList list) {
+		if (atom == Literals.consAtom){
+			return "[" + printList(list);
+		}
+		String p = atom.getAtomName();
+		if (arity > 0){
+			p += "(";
+			for (int i = 0; i < arity; i++){
+				p += args[i].print(list);
+			}
+			p += ")";
+		}
+		return p;
+	}
 	
 	private String printList() {
 		if (isNilTerm(args[1])){
@@ -111,6 +128,23 @@ public class TermCons extends Term{
 					return args[0].print() + "," + args[1].print().substring(1);
 				}
 				return args[0].print() + "|" + args[1].print() + "]";
+			}
+		}
+	}
+	
+	private String printList(UnificationList list) {
+		if (isNilTerm(args[1])){
+			return args[0].print(list) + "]";
+		}
+		else {
+			if (args[1] instanceof TermCons){
+				return args[0].print(list) + "," + ((TermCons)args[1]).printList(list);
+			}
+			else {
+				if (args[1].print().startsWith("[")){
+					return args[0].print(list) + "," + args[1].print(list).substring(1);
+				}
+				return args[0].print(list) + "|" + args[1].print(list) + "]";
 			}
 		}
 	}

@@ -88,6 +88,19 @@ public class TermVar extends Term {
 			return "_" + varNo;
 		}
 	}
+	
+	@Override
+	public String print(UnificationList list) {
+		if(list.getVar() == null){
+			return "_" + varNo;
+		}
+		if (list.getVar().getVarNo() == varNo){
+			return list.getValue().print(list.getPrev());
+		}
+		else{
+			return print(list.getPrev());
+		}
+	}
 
 	public boolean equalsVar(TermVar termVar) {
 		if (this == termVar){

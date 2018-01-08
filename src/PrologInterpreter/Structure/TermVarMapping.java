@@ -41,6 +41,20 @@ public class TermVarMapping {
 			System.out.println(values[size -1] + " = " + map.get(values[size -1]).print() + ";");
 		}
 	}
+	
+	public void showAnswer(UnificationList list) {
+		int size = map.size();
+		String[] values = map.keySet().toArray(new String[size]);
+		if (size == 0){
+			System.out.println("yes");
+		}
+		else {
+			for(int i = 0; i < size-1; i++){
+				System.out.println(values[i] + " = " + map.get(values[i]).print(list) + ",");
+			}
+			System.out.println(values[size -1] + " = " + map.get(values[size -1]).print(list) + ";");
+		}
+	}
 
 	public void clear() {
 		map.clear();
@@ -71,10 +85,6 @@ public class TermVarMapping {
 					t.replace(termVar, newTerm);
 				}
 			}
-			/*if(map.get(v).equalsVar(termVar) == 1){
-				//This is wrong
-				//t.spawnCopy(this);
-			}*/
 		}
 	}
 
