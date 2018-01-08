@@ -1,9 +1,12 @@
 package PrologInterpreter;
 
+import java.util.HashMap;
+
 import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
 import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
+import PrologInterpreter.Structure.Term;
 import PrologInterpreter.Structure.TermVarMapping;
 
 public class CopyWhenSpanningInterpreter implements Interpreter {
@@ -17,8 +20,9 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 		Program q = program;
 		while (q != null){
 			Clause c = q.getHead().deepCopy();
-			final TermVarMapping m = new TermVarMapping(map);
-			final Goal g = goal.spawnCopy(m);
+			HashMap<Term, Term> pairs = new HashMap<>();
+			final TermVarMapping m = new TermVarMapping(map, pairs);
+			final Goal g = goal.deepCopy(pairs);
 			if(g.getHead().unify(c.getHead())){
 				final Goal h = Goal.append(c.getBody(), g.getTail());
 				if(h == null) {

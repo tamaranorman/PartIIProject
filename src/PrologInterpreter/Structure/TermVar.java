@@ -63,7 +63,9 @@ public class TermVar extends Term {
 			return map.get(this);
 		}
 		if (instance == this){
-			return new TermVar();
+			TermVar n = new TermVar();
+			map.put(this, n);
+			return n;
 		}
 		return new TermVar(instance.deepCopy(map), timeStamp++);
 	}

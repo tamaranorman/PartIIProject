@@ -77,14 +77,7 @@ public class TermCons extends Term{
 		}
 		Term[] argsCopy = new Term[arity];
 		for (int i = 0; i < arity; i ++){
-			if (map.containsKey(args[i])){
-				argsCopy[i] = map.get(args[i]);
-			}
-			else{
-				Term t = args[i].deepCopy(map);
-				map.put(args[i], t);
-				argsCopy[i] = t;
-			}
+			argsCopy[i] = args[i].deepCopy(map);
 		}
 		return new TermCons(atom, arity, argsCopy);
 	}

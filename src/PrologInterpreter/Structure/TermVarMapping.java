@@ -11,11 +11,12 @@ public class TermVarMapping {
 		map = new HashMap<String, TermVar>();
 	}
 	
-	public TermVarMapping(TermVarMapping m) {
+	public TermVarMapping(TermVarMapping m, HashMap<Term, Term> pairs) {
 		map = new HashMap<String, TermVar>();
 		String[] values = m.keySet().toArray(new String[m.size()]);
 		for(String v : values){
-			map.put(v, m.get(v));
+			TermVar value = m.get(v);
+			map.put(v,((TermVar) value.deepCopy(pairs)));
 		}
 	}
 
