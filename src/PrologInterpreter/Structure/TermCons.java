@@ -161,8 +161,8 @@ public class TermCons extends Term{
 		}
 	}
 
-	public boolean unifySharing(TermCons head) {
+	public UnificationList unifySharing(TermCons head, UnificationList list) {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 }

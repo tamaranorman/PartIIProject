@@ -10,6 +10,12 @@ public class UnificationList {
 		value = v2;
 		prev = p;
 	}
+	
+	public UnificationList (){
+		var = null;
+		value = null;
+		prev = null;
+	}
 
 	public TermVar getVar() {
 		return var;
