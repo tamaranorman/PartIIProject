@@ -1,5 +1,8 @@
 package PrologInterpreter;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
 import PrologInterpreter.Structure.GoalMappingPair;
@@ -8,10 +11,21 @@ import PrologInterpreter.Structure.TermVarMapping;
 import PrologInterpreter.Structure.UnificationListHolder;
 
 public class StructureSharingInterpreter implements Interpreter{
+	private List<Thread> threads = new LinkedList<Thread>();
 
 	@Override
 	public void executeQuery(GoalMappingPair query, Program rules) {
+		threads = new LinkedList<Thread>();
 		solve(query.getGoal(), rules, query.getMap(), new UnificationListHolder());
+		try {
+			for (int i = 0; i < threads.size(); i++){
+				threads.get(i).join();
+			}
+			System.out.println("All joined");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map, UnificationListHolder list){
@@ -33,7 +47,8 @@ public class StructureSharingInterpreter implements Interpreter{
 							solve(h, program, map, l);
 						}
 					};
-					worker.start();
+					worker.start();//add all to list
+					threads.add(worker);
 				}
 			}
 			else{

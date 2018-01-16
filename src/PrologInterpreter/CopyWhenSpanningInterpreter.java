@@ -1,6 +1,8 @@
 package PrologInterpreter;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
@@ -10,10 +12,21 @@ import PrologInterpreter.Structure.Term;
 import PrologInterpreter.Structure.TermVarMapping;
 
 public class CopyWhenSpanningInterpreter implements Interpreter {
-
+	private List<Thread> threads = new LinkedList<Thread>();
+	
 	@Override
 	public void executeQuery(GoalMappingPair query, Program rules) {
+		threads = new LinkedList<Thread>();
 		solve(query.getGoal(), rules, query.getMap());
+		try {
+			for (int i = 0; i < threads.size(); i++){
+				threads.get(i).join();
+			}
+			System.out.println("All joined");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void solve(Goal goal, final Program program, TermVarMapping map) {
@@ -37,6 +50,7 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 						}
 					};
 					worker.start();
+					threads.add(worker);
 				}
 			}
 			else{
@@ -45,6 +59,7 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 			
 			q = q.getTail();
 		}
+	
 	}
 
 }
