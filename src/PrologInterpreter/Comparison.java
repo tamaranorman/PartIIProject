@@ -12,7 +12,7 @@ public class Comparison {
 	public static void main(String[] args) throws IOException{
 		Interpreter interpreter1 = new SingleThreadedInterpreter();
 		Interpreter interpreter2 = new CopyWhenSpanningInterpreter();
-		Interpreter interpreter3 = new StructureSharingInterpreter();
+		Interpreter interpreter3 = new CopyWhenSpanningInterpreter2();
 		
 		Parser parser = new Parser();
 		Scanner scanner = new Scanner(System.in);
@@ -35,13 +35,15 @@ public class Comparison {
 					long s2 = System.nanoTime();
 					interpreter2.executeQuery(goal, prog);
 					long e2 = System.nanoTime();
+					goal = parser.parseGoal(inputs[1]);
 					long s3 = System.nanoTime();
 					interpreter3.executeQuery(goal, prog);
 					long e3 = System.nanoTime();
 					
 					System.out.println(e1-s1);
 					System.out.println(e2-s2);
-					System.out.println(e3-s3);				} 
+					System.out.println(e3-s3);				
+				} 
 				catch (PrologParserException e) {
 					System.out.println("Query couldn't be executed " + e.getMessage());
 				}

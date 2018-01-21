@@ -234,4 +234,11 @@ public class TermCons extends Term{
 			}
 		}
 	}
+
+	public boolean canUnify(TermCons head) {
+		if (atom.equals(head.atom) && arity == head.arity){
+			  return true;
+		}
+		return false;
+	}
 }
