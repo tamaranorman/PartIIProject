@@ -23,7 +23,6 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 				threads.get(i).join();
 			}
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

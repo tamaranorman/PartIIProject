@@ -2,7 +2,7 @@ package PrologInterpreter.Structure;
 
 public class TestStructure {
 	public static void main(String[] args){
-	Atom a = new Atom("app");
+	/*Atom a = new Atom("app");
 	Atom c = new Atom("cons");
 	TermCons nil = new TermCons(new Atom("nil"), 0, null);
 	TermCons one = new TermCons(new Atom("1"), 0, null);
@@ -43,7 +43,7 @@ public class TestStructure {
 	//TermVarMapping map = new TermVarMapping(v, n, 2);
 	
 	//g1.solve(test, map);
-	
+	*/
 	}
 	
 }

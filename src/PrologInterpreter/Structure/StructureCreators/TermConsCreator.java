@@ -31,8 +31,9 @@ public class TermConsCreator {
 		return null;
 	}
 	
-	private TermCons createTermCons(PrologStructure s){
-
+	private TermCons createTermCons(PrologStructure s)
+	{
+		boolean containsVar = false;
 		Atom a = new Atom(s.getText());
 		int arity = s.getArity();
 		Term[] args = new Term[arity];
@@ -40,21 +41,24 @@ public class TermConsCreator {
 			AbstractPrologTerm t = s.getElement(i);
 			if (t instanceof PrologVariable){
 				args[i] = termCreator.createVar((PrologVariable) t);
+				containsVar = true;
 			}
 			else {
-				args[i] = createTermCons(t);
+				TermCons tc = createTermCons(t);
+				args[i] = tc;
+				containsVar = containsVar | tc.getContainsVar();
 			}
 		}
-		return new TermCons(a, arity, args);
+		return new TermCons(a, arity, args, containsVar);
 	}
 	
 	private TermCons createTermCons(PrologAtom a){
-		return new TermCons(new Atom(a.getText()), 0, null);
+		return new TermCons(new Atom(a.getText()), 0, null, false);
 	}
 	
 	private TermCons createTermCons(AbstractPrologNumericTerm t){
-		if (t instanceof PrologFloatNumber) return new TermCons(new Atom(((PrologFloatNumber)t).getValue().toPlainString()), 0, null);
-		if (t instanceof PrologIntegerNumber) return new TermCons(new Atom(((PrologIntegerNumber)t).getValue().toString()), 0, null);
+		if (t instanceof PrologFloatNumber) return new TermCons(new Atom(((PrologFloatNumber)t).getValue().toPlainString()), 0, null, false);
+		if (t instanceof PrologIntegerNumber) return new TermCons(new Atom(((PrologIntegerNumber)t).getValue().toString()), 0, null, false);
 		return null;
 	}
 	
@@ -63,12 +67,13 @@ public class TermConsCreator {
 			return Literals.nilCons;
 		}
 		else if(l.getTail().equals(null)){
-			return new TermCons(Literals.consAtom, 2, new Term[]{termCreator.createTerm(l.getHead()), 
-																 Literals.nilCons});
+			Term t = termCreator.createTerm(l.getHead());
+			return new TermCons(Literals.consAtom, 2, new Term[]{t, Literals.nilCons}, t.getContainsVar());
 		}
 		else {
-			return new TermCons(Literals.consAtom, 2, new Term[]{termCreator.createTerm(l.getHead()), 
-																 termCreator.createTerm(l.getTail())});
+			Term t1 = termCreator.createTerm(l.getHead());
+			Term t2 = termCreator.createTerm(l.getTail());
+			return new TermCons(Literals.consAtom, 2, new Term[]{t1, t2}, t1.getContainsVar()|t2.getContainsVar());
 		}
 	}
 }

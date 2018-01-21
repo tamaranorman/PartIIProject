@@ -8,16 +8,19 @@ public class TermVar extends Term {
 	private Term instance;
 	
 	public TermVar(){
+		super(true);
 		instance = this;
 		varNo = timeStamp++;
 	}
 	
 	public TermVar(int n){
+		super(true);
 		instance = this;
 		varNo = n;
 	}
 	
 	public TermVar(Term i, int n) {
+		super(true);
 		instance = i;
 		varNo = n;
 	}

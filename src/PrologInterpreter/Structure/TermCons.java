@@ -9,7 +9,8 @@ public class TermCons extends Term{
 	private final Atom atom;
 	private final Term[] args;
 	
-	public TermCons(Atom a, int arity, Term[] args){
+	public TermCons(Atom a, int arity, Term[] args, boolean cVar){
+		super(cVar);
 		atom = a;
 		this.arity = arity;
 		this.args = args;
@@ -81,30 +82,39 @@ public class TermCons extends Term{
 	}
 	
 	protected TermCons copyCons() {
+		if (!containsVar){
+			return this;
+		}
 		Term[] argsCopy = new Term[arity];
 		for (int i = 0; i < arity; i ++){
 			argsCopy[i] = args[i].copy();
 		}
-		return new TermCons(atom, arity, argsCopy);
+		return new TermCons(atom, arity, argsCopy, containsVar);
 	}
 	
 	protected TermCons spawnCopyCons(TermVarMapping m) {
+		if (!containsVar){
+			return this;
+		}
 		Term[] argsCopy = new Term[arity];
 		for (int i = 0; i < arity; i ++){
 			argsCopy[i] = args[i].spawnCopy(m);
 		}
-		return new TermCons(atom, arity, argsCopy);
+		return new TermCons(atom, arity, argsCopy, containsVar);
 	}
 	
 	public <Terms> TermCons deepCopyCons(HashMap<Term, Term> map) {
+		if (!containsVar){
+			return this;
+		}
 		if (arity == 0){
-			return new TermCons(atom, 0, null);
+			return new TermCons(atom, 0, null, containsVar);
 		}
 		Term[] argsCopy = new Term[arity];
 		for (int i = 0; i < arity; i ++){
 			argsCopy[i] = args[i].deepCopy(map);
 		}
-		return new TermCons(atom, arity, argsCopy);
+		return new TermCons(atom, arity, argsCopy, containsVar);
 	}
 
 	@Override
