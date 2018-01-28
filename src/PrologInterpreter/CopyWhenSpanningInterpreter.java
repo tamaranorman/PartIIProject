@@ -10,6 +10,7 @@ import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
 import PrologInterpreter.Structure.Term;
 import PrologInterpreter.Structure.TermVarMapping;
+import PrologInterpreter.Utilities.Literals;
 
 public class CopyWhenSpanningInterpreter implements Interpreter {
 	private List<Thread> threads = new LinkedList<Thread>();
@@ -28,46 +29,84 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 	}
 
 	private void solve(Goal goal, final Program program, TermVarMapping map) {
-		Program q = program;
-		while (q != null){
-			if (goal.getHead().canUnify(q.getHead().getHead())){
-				Clause c = q.getHead().deepCopy();
-				final TermVarMapping m;
-				final Goal g;
-				if (q.getTail() != null){
-					HashMap<Term, Term> pairs = new HashMap<>();
-					m = new TermVarMapping(map, pairs);
-					g = goal.deepCopy(pairs);
+		if (goal.getHead().getAtom().getAtomName().equals(Literals.is)){
+			if (goal.getHead().unifyIs()){
+				Goal g = goal.getTail();
+				if(g == null) {
+					map.showAnswer();  
 				}
-				else
-				{
-					m = map;
-					g = goal;
+				else{
+					solve(g, program, map);
 				}
-				if(g.getHead().unify(c.getHead())){
-					final Goal h = Goal.append(c.getBody(), g.getTail());
-					if(h == null) {
-						m.showAnswer();
+			}
+		}
+		else if (goal.getHead().getAtom().getAtomName().equals(Literals.equals)){
+			if (goal.getHead().unifyEquals()){
+				Goal g = goal.getTail();
+				if(g == null) {
+					map.showAnswer();
+				}
+				else{
+					solve(g, program, map);
+				}
+			}
+		}
+		else if (goal.getHead().getAtom().getAtomName().equals(Literals.notEquals)){
+			if (goal.getHead().unifyNotEqual()){
+				Goal g = goal.getTail();
+				if(g == null) {
+					map.showAnswer();
+				}
+				else{
+					solve(g, program, map);
+				}
+			}
+		}
+		else{
+			Program q = program;
+			while (q != null){
+				if (goal.getHead().canUnify(q.getHead().getHead())){
+					Clause c = q.getHead().deepCopy();
+					final TermVarMapping m;
+					final Goal g;
+					if (q.getTail() != null){
+						HashMap<Term, Term> pairs = new HashMap<>();
+						m = new TermVarMapping(map, pairs);
+						g = goal.deepCopy(pairs);
 					}
-					else{
-						Thread worker = new Thread() {
-							@Override 
-							public void run(){
+					else
+					{
+						m = map;
+						g = goal;
+					}
+					if(g.getHead().unify(c.getHead())){
+						final Goal h = Goal.append(c.getBody(), g.getTail());
+						if(h == null) {
+							m.showAnswer();
+						}
+						else{
+							if (q.getTail() == null){
 								solve(h, program, m);
 							}
-						};
-						worker.start();
-						threads.add(worker);
+							else {  
+								Thread worker = new Thread() {
+									@Override 
+									public void run(){
+										solve(h, program, m);
+									}
+								};
+								worker.start();
+								threads.add(worker);
+							}
+						}
 					}
 				}
+				else{
+					//System.out.println("false.");
+				}
+				
+				q = q.getTail();
 			}
-			else{
-				System.out.println("false.");
-			}
-			
-			q = q.getTail();
 		}
-	
 	}
-
 }

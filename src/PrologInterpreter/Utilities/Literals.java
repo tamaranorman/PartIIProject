@@ -14,4 +14,9 @@ public class Literals {
 	
 	public static String ifSeperator = ":-";
 	public static String commaSeperator = ",";
+	
+	public static String is = "is";
+	public static String equals = "=";
+	public static String notEquals = "=\\=";
+	public static String greaterThan = ">";
 }

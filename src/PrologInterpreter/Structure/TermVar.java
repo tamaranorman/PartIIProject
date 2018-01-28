@@ -152,4 +152,9 @@ public class TermVar extends Term {
 			instance.replace(termVar, newTerm);
 		}
 	}
+
+	@Override
+	public int evaluate() {
+		return instance.evaluate();
+	}
 }

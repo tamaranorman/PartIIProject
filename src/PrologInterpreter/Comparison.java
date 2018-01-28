@@ -27,22 +27,32 @@ public class Comparison {
 			if (input.startsWith("?-")){
 				try {
 					String[] inputs = input.split("-");
-					GoalMappingPair goal = parser.parseGoal(inputs[1]);
-					long s1 = System.nanoTime();
-					interpreter1.executeQuery(goal, prog);
-					long e1 = System.nanoTime();
-					goal = parser.parseGoal(inputs[1]);
-					long s2 = System.nanoTime();
-					interpreter2.executeQuery(goal, prog);
-					long e2 = System.nanoTime();
-					goal = parser.parseGoal(inputs[1]);
-					long s3 = System.nanoTime();
-					interpreter3.executeQuery(goal, prog);
-					long e3 = System.nanoTime();
-					
-					System.out.println(e1-s1);
-					System.out.println(e2-s2);
-					System.out.println(e3-s3);				
+					GoalMappingPair goal;
+					long v1 = 0;
+					long v2 = 0;
+					long v3 = 0;
+					for (int i = 0; i < 10; i++){
+						goal = parser.parseGoal(inputs[1]);
+						long s1 = System.nanoTime();
+						interpreter1.executeQuery(goal, prog);
+						long e1 = System.nanoTime();
+						v1 += e1 - s1;
+						
+						goal = parser.parseGoal(inputs[1]);
+						long s2 = System.nanoTime();
+						interpreter2.executeQuery(goal, prog);
+						long e2 = System.nanoTime();
+						v2 += e2 - s2;
+						
+						goal = parser.parseGoal(inputs[1]);
+						long s3 = System.nanoTime();
+						interpreter3.executeQuery(goal, prog);
+						long e3 = System.nanoTime();
+						v3 += e3 - s3;
+					}
+					System.out.println(v1/10);	
+					System.out.println(v2/10);
+					System.out.println(v3/10);
 				} 
 				catch (PrologParserException e) {
 					System.out.println("Query couldn't be executed " + e.getMessage());

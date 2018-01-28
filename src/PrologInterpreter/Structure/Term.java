@@ -12,6 +12,7 @@ public abstract class Term {
 	public abstract void replace(TermVar termVar, TermVar newTerm);
 	public abstract String print(UnificationList list, UnificationListHolder fixedList);
 	public abstract boolean unifySharing(Term t, UnificationListHolder holder, UnificationList list);
+	public abstract int evaluate();
 	
 	public Term(boolean b){
 		containsVar = b;

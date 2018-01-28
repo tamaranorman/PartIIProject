@@ -41,6 +41,61 @@ public class TermCons extends Term{
 		}
 	}
 	
+	public boolean unifyIs() {
+		if(args[1] instanceof TermVar){
+			if (!((TermVar)args[1]).isUnunified()){
+				return false;
+			}
+		}
+		try {
+			TermCons lhs = new TermCons(new Atom(String.valueOf(args[1].evaluate())), 0, null, false);
+			return args[0].unify(lhs);
+		}
+		catch(NumberFormatException e){
+			System.out.println("is cannot be used if the expression is not an integer");
+			return false;
+		}
+	}
+	
+	public boolean unifyEquals() {
+		return args[0].unify(args[1]);
+	}
+
+	public boolean unifyNotEqual() {
+		return args[0].evaluate() != args[1].evaluate();
+	}
+	
+	public boolean unifyGreaterThan() {
+		return args[0].evaluate() > args[1].evaluate();
+	}
+	
+	@Override
+	public int evaluate() throws NumberFormatException{
+		if (atom.getAtomName().equals("+")){
+			int a = args[0].evaluate();
+			int b = args[1].evaluate();
+			return a + b;
+		}
+		if (atom.getAtomName().equals("*")){
+			int a = args[0].evaluate();
+			int b = args[1].evaluate();
+			return a * b;
+		}
+		if (atom.getAtomName().equals("-")){
+			int a = args[0].evaluate();
+			int b = args[1].evaluate();
+			return a - b;
+		}
+		if (atom.getAtomName().equals("//")){
+			int a = args[0].evaluate();
+			int b = args[1].evaluate();
+			return a / b;
+		}
+		else {
+			return Integer.parseInt(atom.getAtomName());
+		}
+	}
+
 	@Override
 	public boolean unifySharing (Term t, UnificationListHolder holder, UnificationList list) {
 		if (t instanceof TermCons){
@@ -215,6 +270,10 @@ public class TermCons extends Term{
 
 	public Term[] getArgs() {
 		return args;
+	}
+	
+	public Atom getAtom() {
+		return atom;
 	}
 
 	public boolean contains(TermVar instance) {
