@@ -9,6 +9,7 @@ import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
 import PrologInterpreter.Structure.TermVarMapping;
 import PrologInterpreter.Structure.UnificationListHolder;
+import PrologInterpreter.Utilities.Literals;
 
 public class StructureSharingInterpreter implements Interpreter{
 	private List<Thread> threads = new LinkedList<Thread>();
@@ -21,7 +22,7 @@ public class StructureSharingInterpreter implements Interpreter{
 			for (int i = 0; i < threads.size(); i++){
 				threads.get(i).join();
 			}
-			System.out.println("All joined");
+			//System.out.println("All joined");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -29,33 +30,66 @@ public class StructureSharingInterpreter implements Interpreter{
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map, UnificationListHolder list){
-		Program q = program;
-		while (q != null){
-			Clause c = q.getHead().deepCopy();
-			final Goal g = goal.shallowCopy();
-			UnificationListHolder l = new UnificationListHolder(list.getList());
-			if(g.getHead().unifySharing(c.getHead(), l, l.getList())){
-				Goal h = Goal.append(c.getBody(), goal.getTail());
-				if(h == null) {
-					map.showAnswer(l);
+		String goalAtomName = goal.getHead().getAtom().getAtomName();
+		if (Literals.MY_SET.contains(goalAtomName)){
+			boolean unifies;
+			switch (goalAtomName){
+				case "is": 
+					unifies = goal.getHead().unifyIsSharing(list);
+					break;
+				case "=":
+					unifies = goal.getHead().unifyEqualsSharing(list);
+					break;
+				case "=\\=":
+					unifies = goal.getHead().unifyNotEqualSharing(list);
+					break;
+				case ">":
+					unifies = goal.getHead().unifyGreaterThanSharing(list);
+					break;
+				default:
+					unifies = false;
+					break;
+			}
+			if (unifies){
+				Goal g = goal.getTail();
+				if(g == null) {
+					map.showAnswer();  
 				}
 				else{
-					Thread worker = new Thread() {
-						@Override 
-						public void run(){
-							System.out.println("New thread reached");
-							solve(h, program, map, l);
-						}
-					};
-					worker.start();//add all to list
-					threads.add(worker);
+					solve(g, program, map, list);
 				}
 			}
-			else{
-				System.out.println("false.");
+		}
+		else {
+			Program q = program;
+			while (q != null){
+				if (goal.getHead().canUnify(q.getHead().getHead())){
+					Clause c = q.getHead().deepCopy();
+					final Goal g = goal.shallowCopy();
+					UnificationListHolder l = new UnificationListHolder(list.getList());
+					if(g.getHead().unifySharing(c.getHead(), l, l.getList())){
+						Goal h = Goal.append(c.getBody(), goal.getTail());
+						if(h == null) {
+							map.showAnswer(l);
+						}
+						else{
+							Thread worker = new Thread() {
+								@Override 
+								public void run(){
+									//System.out.println("New thread reached");
+									solve(h, program, map, l);
+								}
+							};
+							worker.start();//add all to list
+							threads.add(worker);
+						}
+					}
+					else{
+						//System.out.println("false.");
+					}
+				}
+				q = q.getTail();
 			}
-			
-			q = q.getTail();
 		}
 	}
 

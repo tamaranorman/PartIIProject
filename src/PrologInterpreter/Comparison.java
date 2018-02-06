@@ -12,7 +12,7 @@ public class Comparison {
 	public static void main(String[] args) throws IOException{
 		Interpreter interpreter1 = new SingleThreadedInterpreter();
 		Interpreter interpreter2 = new CopyWhenSpanningInterpreter();
-		Interpreter interpreter3 = new CopyWhenSpanningInterpreter2();
+		Interpreter interpreter3 = new StructureSharingInterpreter();
 		
 		Parser parser = new Parser();
 		Scanner scanner = new Scanner(System.in);

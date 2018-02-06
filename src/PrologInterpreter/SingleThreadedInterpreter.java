@@ -18,44 +18,30 @@ public class SingleThreadedInterpreter implements Interpreter {
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map){
-		if (goal.getHead().getAtom().getAtomName().equals(Literals.is)){
-			if (goal.getHead().unifyIs()){
+		String goalAtomName = goal.getHead().getAtom().getAtomName();
+		if (Literals.MY_SET.contains(goalAtomName)){
+			boolean unifies;
+			switch (goalAtomName){
+				case "is": 
+					unifies = goal.getHead().unifyIs();
+					break;
+				case "=":
+					unifies = goal.getHead().unifyEquals();
+					break;
+				case "=\\=":
+					unifies = goal.getHead().unifyNotEqual();
+					break;
+				case ">":
+					unifies = goal.getHead().unifyGreaterThan();
+					break;
+				default:
+					unifies = false;
+					break;
+			}
+			if (unifies){
 				Goal g = goal.getTail();
 				if(g == null) {
 					map.showAnswer();  
-				}
-				else{
-					solve(g, program, map);
-				}
-			}
-		}
-		else if (goal.getHead().getAtom().getAtomName().equals(Literals.equals)){
-			if (goal.getHead().unifyEquals()){
-				Goal g = goal.getTail();
-				if(g == null) {
-					map.showAnswer();
-				}
-				else{
-					solve(g, program, map);
-				}
-			}
-		}
-		else if (goal.getHead().getAtom().getAtomName().equals(Literals.notEquals)){
-			if (goal.getHead().unifyNotEqual()){
-				Goal g = goal.getTail();
-				if(g == null) {
-					map.showAnswer();
-				}
-				else{
-					solve(g, program, map);
-				}
-			}
-		}
-		else if (goal.getHead().getAtom().getAtomName().equals(Literals.greaterThan)){
-			if (goal.getHead().unifyGreaterThan()){
-				Goal g = goal.getTail();
-				if(g == null) {
-					map.showAnswer();
 				}
 				else{
 					solve(g, program, map);

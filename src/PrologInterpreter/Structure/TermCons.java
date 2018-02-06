@@ -110,7 +110,7 @@ public class TermCons extends Term{
 	public boolean unifyConsSharing(TermCons t, UnificationListHolder holder, UnificationList list) {
 		if (t.arity == arity && t.atom.equals(atom)){
 			for(int i = 0; i < arity; i ++){
-				if(!args[i].unifySharing(t.args[i], holder, list)){
+				if(!args[i].unifySharing(t.args[i], holder, holder.getList())){
 					return false;
 				}
 			}
@@ -118,6 +118,62 @@ public class TermCons extends Term{
 		}
 		else {
 			return false;
+		}
+	}
+	
+	public boolean unifyIsSharing(UnificationListHolder holder) {
+		if(args[1] instanceof TermVar){
+			if (!((TermVar)args[1]).isUnifiedSharingCons(holder, holder.getList())){
+				return false;
+			}
+		}
+		try {
+			TermCons lhs = new TermCons(new Atom(String.valueOf(args[1].evaluateSharing(holder, holder.getList()))), 0, null, false);
+			return args[0].unifySharing(lhs, holder, holder.getList());
+		}
+		catch(NumberFormatException e){
+			System.out.println("is cannot be used if the expression is not an integer");
+			return false;
+		}
+	}
+	
+	public boolean unifyEqualsSharing(UnificationListHolder holder) {
+		return args[0].unifySharing(args[1], holder, holder.getList());
+	}
+
+	public boolean unifyNotEqualSharing(UnificationListHolder holder) {
+		return args[0].evaluateSharing(holder, holder.getList()) != args[1].evaluateSharing(holder, holder.getList());
+	}
+	
+	public boolean unifyGreaterThanSharing(UnificationListHolder holder) {
+		return args[0].evaluateSharing(holder, holder.getList()) > args[1].evaluateSharing(holder, holder.getList());
+	}
+	
+
+	@Override
+	public int evaluateSharing(UnificationListHolder holder, UnificationList list) {
+		if (atom.getAtomName().equals("+")){
+			int a = args[0].evaluateSharing(holder, holder.getList());
+			int b = args[1].evaluateSharing(holder, holder.getList());
+			return a + b;
+		}
+		if (atom.getAtomName().equals("*")){
+			int a = args[0].evaluateSharing(holder, holder.getList());
+			int b = args[1].evaluateSharing(holder, holder.getList());
+			return a * b;
+		}
+		if (atom.getAtomName().equals("-")){
+			int a = args[0].evaluateSharing(holder, holder.getList());
+			int b = args[1].evaluateSharing(holder, holder.getList());
+			return a - b;
+		}
+		if (atom.getAtomName().equals("//")){
+			int a = args[0].evaluateSharing(holder, holder.getList());
+			int b = args[1].evaluateSharing(holder, holder.getList());
+			return a / b;
+		}
+		else {
+			return Integer.parseInt(atom.getAtomName());
 		}
 	}
 

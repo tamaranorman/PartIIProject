@@ -41,8 +41,11 @@ public class TermVar extends Term {
 	@Override
 	public boolean unifySharing(Term t, UnificationListHolder holder, UnificationList list) {
 		if(this.equals(list.getVar())){//Need to make no not value
-			return list.getValue().unifySharing(t, holder, list.getPrev());
+			return list.getValue().unifySharing(t, holder, holder.getList());
 		}
+		/*if (t.equals(list.getVar())){
+			return this.unifySharing(list.getValue(), holder, list.getPrev());
+		}*/
 		if (list.getPrev() == null){
 			holder.addToList(this, t);
 			return true;
@@ -145,6 +148,33 @@ public class TermVar extends Term {
 	public boolean isUnunified() {
 		return (instance == this);
 	}
+	
+	public boolean isUnifiedCons() {
+		if (instance != this){
+			if (instance instanceof TermCons){
+				return true;
+			}
+			else{
+				return ((TermVar) instance).isUnifiedCons();
+			}
+		}
+		return false;
+	}
+	
+	public boolean isUnifiedSharingCons(UnificationListHolder holder, UnificationList list) {
+		if (list.getVar() != null){
+			if (list.getVar() == this){
+				if (list.getValue() instanceof TermCons){
+					return true;
+				}
+				((TermVar)list.getValue()).isUnifiedSharingCons(holder, holder.getList());
+			}
+		}
+		else if (list.getPrev() != null){
+			return isUnifiedSharingCons(holder,  list.getPrev());
+		}
+		return false;
+	}
 
 	@Override
 	public void replace(TermVar termVar, TermVar newTerm) {
@@ -156,5 +186,17 @@ public class TermVar extends Term {
 	@Override
 	public int evaluate() {
 		return instance.evaluate();
+	}
+
+	@Override
+	public int evaluateSharing(UnificationListHolder holder, UnificationList list) {
+		if (list.getVar() != null && list.getVar().getVarNo() == varNo){
+			return list.getValue().evaluateSharing(holder, holder.getList());
+		}
+		else if (list.getPrev() != null){
+			return evaluateSharing(holder, list.getPrev());
+		}
+		System.out.println("Nothing in list");
+		return 0;
 	}
 }
