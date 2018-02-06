@@ -18,57 +18,70 @@ public class SingleThreadedInterpreter implements Interpreter {
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map){
-		String goalAtomName = goal.getHead().getAtom().getAtomName();
-		if (Literals.MY_SET.contains(goalAtomName)){
-			boolean unifies;
-			switch (goalAtomName){
-				case "is": 
-					unifies = goal.getHead().unifyIs();
-					break;
-				case "=":
-					unifies = goal.getHead().unifyEquals();
-					break;
-				case "=\\=":
-					unifies = goal.getHead().unifyNotEqual();
-					break;
-				case ">":
-					unifies = goal.getHead().unifyGreaterThan();
-					break;
-				default:
-					unifies = false;
-					break;
-			}
-			if (unifies){
-				Goal g = goal.getTail();
-				if(g == null) {
-					map.showAnswer();  
+		boolean repeat = false;
+		do {
+			repeat = false;
+			String goalAtomName = goal.getHead().getAtom().getAtomName();
+			if (Literals.MY_SET.contains(goalAtomName)){
+				boolean unifies;
+				switch (goalAtomName){
+					case "is": 
+						unifies = goal.getHead().unifyIs();
+						break;
+					case "=":
+						unifies = goal.getHead().unifyEquals();
+						break;
+					case "=\\=":
+						unifies = goal.getHead().unifyNotEqual();
+						break;
+					case ">":
+						unifies = goal.getHead().unifyGreaterThan();
+						break;
+					default:
+						unifies = false;
+						break;
 				}
-				else{
-					solve(g, program, map);
-				}
-			}
-		}
-		else {
-			Program q = program;
-			while (q != null){
-				Trail t = Trail.note();
-				Clause c = q.getHead().copy();
-				Trail.Undo(t);
-				if(goal.getHead().unify(c.getHead())){
-					Goal g = Goal.append(c.getBody(), goal.getTail());
+				if (unifies){
+					Goal g = goal.getTail();
 					if(g == null) {
-						map.showAnswer();
+						map.showAnswer();  
 					}
 					else{
-						solve(g, program, map);
+						goal = g;
+						repeat = true;
 					}
 				}
-				else{
-					//System.out.println("false.");
-				}
-				Trail.Undo(t);
-				q = q.getTail();
 			}
-		}
+			else {
+				Program q = program;
+				while (q != null){
+					Trail t = Trail.note();
+					Clause c = q.getHead().copy();
+					Trail.Undo(t);
+					if(goal.getHead().unify(c.getHead())){
+						Goal g = Goal.append(c.getBody(), goal.getTail());
+						if(g == null) {
+							map.showAnswer();
+						}
+						else{
+							if (q.getTail() == null){
+								goal = g;
+								repeat = true;
+							}
+							else {
+								solve(g, program, map);
+							}
+						}
+					}
+					else{
+						//System.out.println("false.");
+					}
+					if (!repeat){
+						Trail.Undo(t);
+					}
+					q = q.getTail();
+				}
+			}
+		} while (repeat);
 	}
 }
