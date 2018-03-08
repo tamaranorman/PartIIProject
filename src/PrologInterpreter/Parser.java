@@ -1,6 +1,7 @@
 package PrologInterpreter;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.igormaznitsa.prologparser.PrologParser;
 import com.igormaznitsa.prologparser.exceptions.PrologParserException;
@@ -17,9 +18,9 @@ public class Parser {
 		parser = new PrologParser(null);
 	}
 	
-	public Clause parseClause(String input) throws IOException, PrologParserException{
+	public Clause parseClause(String input, HashMap<String, Integer> progDict) throws IOException, PrologParserException{
 		PrologStructure structure = (PrologStructure) parser.nextSentence(input);
-		return PrologStructureToStructure.createClause(structure); 
+		return PrologStructureToStructure.createClause(structure, progDict); 
 	}
 	
 	public GoalMappingPair parseGoal(String input) throws IOException, PrologParserException{

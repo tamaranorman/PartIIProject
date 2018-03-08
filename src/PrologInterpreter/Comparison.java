@@ -1,6 +1,7 @@
 package PrologInterpreter;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import com.igormaznitsa.prologparser.exceptions.PrologParserException;
@@ -22,6 +23,7 @@ public class Comparison {
 		
 		Program prog = null;
 		Program last = null;
+		HashMap<String, Integer> progDict = new HashMap<String, Integer>();
 		while (scanner.hasNext()){
 			String input = scanner.nextLine();
 			if (input.startsWith("?-")){
@@ -60,7 +62,7 @@ public class Comparison {
 			}
 			else {
 				try {
-					Program c = new Program(parser.parseClause(input), null);
+					Program c = new Program(parser.parseClause(input, progDict), null);
 					if (prog == null){
 						prog = c;
 						last = c;
