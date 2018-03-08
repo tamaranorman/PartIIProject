@@ -1,5 +1,7 @@
 package PrologInterpreter;
 
+import java.util.HashMap;
+
 import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
 import PrologInterpreter.Structure.GoalMappingPair;
@@ -13,11 +15,11 @@ public class SingleThreadedInterpreter implements Interpreter {
 	 * @see PrologInterpreter.Interpreter#executeQuery(PrologInterpreter.Structure.GoalMappingPair, PrologInterpreter.Structure.Program)
 	 */
 	@Override
-	public void executeQuery(GoalMappingPair query, Program rules){
-		solve(query.getGoal(), rules, query.getMap());
+	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict){
+		solve(query.getGoal(), rules, query.getMap(), progDict);
 	}
 	
-	private void solve (Goal goal, Program program, TermVarMapping map){
+	private void solve (Goal goal, Program program, TermVarMapping map, HashMap<String, Integer> progDict){
 		boolean repeat = false;
 		do {
 			repeat = false;
@@ -54,32 +56,39 @@ public class SingleThreadedInterpreter implements Interpreter {
 			}
 			else {
 				Program q = program;
-				while (q != null){
-					Trail t = Trail.note();
-					Clause c = q.getHead().copy();
-					Trail.Undo(t);
-					if(goal.getHead().unify(c.getHead())){
-						Goal g = Goal.append(c.getBody(), goal.getTail());
-						if(g == null) {
-							map.showAnswer();
+				String name = goal.getHead().getAtom().getAtomName();
+				if (progDict.containsKey(name)) {
+					int i = progDict.get(name);
+					while (q != null && i > 0){
+						Trail t = Trail.note();
+						Clause c = q.getHead().copy();
+						if (c.getHead().getAtom().getAtomName().equals(name)) {
+							i--;
+						}
+						Trail.Undo(t);
+						if(goal.getHead().unify(c.getHead())){
+							Goal g = Goal.append(c.getBody(), goal.getTail());
+							if(g == null) {
+								map.showAnswer();
+							}
+							else{
+								if (q.getTail() == null){
+									goal = g;
+									repeat = true;
+								}
+								else {
+									solve(g, program, map, progDict);
+								}
+							}
 						}
 						else{
-							if (q.getTail() == null){
-								goal = g;
-								repeat = true;
-							}
-							else {
-								solve(g, program, map);
-							}
+							//System.out.println("false.");
 						}
+						if (!repeat){
+							Trail.Undo(t);
+						}
+						q = q.getTail();
 					}
-					else{
-						//System.out.println("false.");
-					}
-					if (!repeat){
-						Trail.Undo(t);
-					}
-					q = q.getTail();
 				}
 			}
 		} while (repeat);

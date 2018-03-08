@@ -16,9 +16,9 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 	private List<Thread> threads = new LinkedList<Thread>();
 	
 	@Override
-	public void executeQuery(GoalMappingPair query, Program rules) {
+	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
 		threads = new LinkedList<Thread>();
-		solve(query.getGoal(), rules, query.getMap());
+		solve(query.getGoal(), rules, query.getMap(), progDict);
 		try {
 			for (int i = 0; i < threads.size(); i++){
 				threads.get(i).join();
@@ -28,7 +28,7 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 		}
 	}
 
-	private void solve(Goal goal, final Program program, TermVarMapping map) {
+	private void solve(Goal goal, final Program program, TermVarMapping map, HashMap<String, Integer> progDict) {
 		boolean repeat = false;
 		do {
 			repeat = false;
@@ -65,50 +65,57 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 			}
 			else{
 				Program q = program;
-				while (q != null){
-					if (goal.getHead().canUnify(q.getHead().getHead())){
-						Clause c = q.getHead().deepCopy();
-						final TermVarMapping m;
-						final Goal g;
-						if (q.getTail() != null){
-							HashMap<Term, Term> pairs = new HashMap<>();
-							m = new TermVarMapping(map, pairs);
-							g = goal.deepCopy(pairs);
+				String name = goal.getHead().getAtom().getAtomName();
+				if (progDict.containsKey(name)) {
+					int i = progDict.get(name);
+					while (q != null){
+						if (q.getHead().getHead().getAtom().getAtomName().equals(name)) {
+							i--;
 						}
-						else
-						{
-							m = map;
-							g = goal;
-						}
-						if(g.getHead().unify(c.getHead())){
-							final Goal h = Goal.append(c.getBody(), g.getTail());
-							if(h == null) {
-								m.showAnswer();
+						if (goal.getHead().canUnify(q.getHead().getHead())){
+							Clause c = q.getHead().deepCopy();
+							final TermVarMapping m;
+							final Goal g;
+							if (q.getTail() != null){
+								HashMap<Term, Term> pairs = new HashMap<>();
+								m = new TermVarMapping(map, pairs);
+								g = goal.deepCopy(pairs);
 							}
-							else{
-								if (q.getTail() == null){
-									goal = h;
-									map = m;
-									repeat = true;
+							else
+							{
+								m = map;
+								g = goal;
+							}
+							if(g.getHead().unify(c.getHead())){
+								final Goal h = Goal.append(c.getBody(), g.getTail());
+								if(h == null) {
+									m.showAnswer();
 								}
-								else {  
-									Thread worker = new Thread() {
-										@Override 
-										public void run(){
-											solve(h, program, m);
-										}
-									};
-									threads.add(worker);
-									worker.start();
+								else{
+									if (q.getTail() == null || i == 0){
+										goal = h;
+										map = m;
+										repeat = true;
+									}
+									else {  
+										Thread worker = new Thread() {
+											@Override 
+											public void run(){
+												solve(h, program, m, progDict);
+											}
+										};
+										threads.add(worker);
+										worker.start();
+									}
 								}
 							}
 						}
+						else{
+							//System.out.println("false.");
+						}
+
+						q = q.getTail();
 					}
-					else{
-						//System.out.println("false.");
-					}
-					
-					q = q.getTail();
 				}
 			}
 		}while(repeat);

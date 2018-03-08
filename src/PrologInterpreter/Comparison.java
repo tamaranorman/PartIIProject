@@ -36,19 +36,19 @@ public class Comparison {
 					for (int i = 0; i < 10; i++){
 						goal = parser.parseGoal(inputs[1]);
 						long s1 = System.nanoTime();
-						interpreter1.executeQuery(goal, prog);
+						interpreter1.executeQuery(goal, prog, progDict);
 						long e1 = System.nanoTime();
 						v1 += e1 - s1;
 						
 						goal = parser.parseGoal(inputs[1]);
 						long s2 = System.nanoTime();
-						interpreter2.executeQuery(goal, prog);
+						interpreter2.executeQuery(goal, prog, progDict);
 						long e2 = System.nanoTime();
 						v2 += e2 - s2;
 						
 						goal = parser.parseGoal(inputs[1]);
 						long s3 = System.nanoTime();
-						interpreter3.executeQuery(goal, prog);
+						interpreter3.executeQuery(goal, prog, progDict);
 						long e3 = System.nanoTime();
 						v3 += e3 - s3;
 					}

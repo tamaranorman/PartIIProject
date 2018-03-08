@@ -26,7 +26,7 @@ public class UI {
 			if (input.startsWith("?-")){
 				try {
 					String[] inputs = input.split("-");
-					interpreter.executeQuery(parser.parseGoal(inputs[1]), prog);
+					interpreter.executeQuery(parser.parseGoal(inputs[1]), prog, progDict);
 				} catch (PrologParserException e) {
 					System.out.println("Query couldn't be executed " + e.getMessage());
 				}

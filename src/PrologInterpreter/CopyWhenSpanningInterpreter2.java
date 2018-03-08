@@ -15,7 +15,7 @@ public class CopyWhenSpanningInterpreter2 implements Interpreter {
 	private List<Thread> threads = new LinkedList<Thread>();
 	
 	@Override
-	public void executeQuery(GoalMappingPair query, Program rules) {
+	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
 		threads = new LinkedList<Thread>();
 		solve(query.getGoal(), rules, query.getMap());
 		try {

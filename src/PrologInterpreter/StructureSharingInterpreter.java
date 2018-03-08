@@ -1,5 +1,6 @@
 package PrologInterpreter;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,9 +16,9 @@ public class StructureSharingInterpreter implements Interpreter{
 	private List<Thread> threads = new LinkedList<Thread>();
 
 	@Override
-	public void executeQuery(GoalMappingPair query, Program rules) {
+	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
 		threads = new LinkedList<Thread>();
-		solve(query.getGoal(), rules, query.getMap(), new UnificationListHolder());
+		solve(query.getGoal(), rules, query.getMap(), new UnificationListHolder(), progDict);
 		try {
 			for (int i = 0; i < threads.size(); i++){
 				threads.get(i).join();
@@ -27,7 +28,7 @@ public class StructureSharingInterpreter implements Interpreter{
 		}
 	}
 	
-	private void solve (Goal goal, Program program, TermVarMapping map, UnificationListHolder list){
+	private void solve (Goal goal, Program program, TermVarMapping map, UnificationListHolder list, HashMap<String, Integer> progDict){
 		boolean repeat = false;
 		do{
 			repeat = false;
@@ -64,39 +65,46 @@ public class StructureSharingInterpreter implements Interpreter{
 			}
 			else {
 				Program q = program;
-				while (q != null){
-					if (goal.getHead().canUnify(q.getHead().getHead())){
-						Clause c = q.getHead().deepCopy();
-						final Goal g = goal.shallowCopy();
-						UnificationListHolder l = new UnificationListHolder(list.getList());
-						if(g.getHead().unifySharing(c.getHead(), l, l.getList())){
-							Goal h = Goal.append(c.getBody(), goal.getTail());
-							if(h == null) {
-								map.showAnswer(l);
+				String name = goal.getHead().getAtom().getAtomName();
+				if (progDict.containsKey(name)) {
+					int i = progDict.get(name);
+					while (q != null){
+						if (q.getHead().getHead().getAtom().getAtomName().equals(name)) {
+							i--;
+						}
+						if (goal.getHead().canUnify(q.getHead().getHead())){
+							Clause c = q.getHead().deepCopy();
+							final Goal g = goal.shallowCopy();
+							UnificationListHolder l = new UnificationListHolder(list.getList());
+							if(g.getHead().unifySharing(c.getHead(), l, l.getList())){
+								Goal h = Goal.append(c.getBody(), goal.getTail());
+								if(h == null) {
+									map.showAnswer(l);
+								}
+								else{
+									if (q.getTail() == null || i == 0){
+										goal = h;
+										list = l;
+										repeat = true;
+									}
+									else {
+										Thread worker = new Thread() {
+											@Override 
+											public void run(){
+												solve(h, program, map, l, progDict);
+											}
+										};
+										worker.start();
+										threads.add(worker);
+									}
+								}
 							}
 							else{
-								if (q.getTail() == null){
-									goal = h;
-									list = l;
-									repeat = true;
-								}
-								else {
-									Thread worker = new Thread() {
-										@Override 
-										public void run(){
-											solve(h, program, map, l);
-										}
-									};
-									worker.start();
-									threads.add(worker);
-								}
+								//System.out.println("false.");
 							}
 						}
-						else{
-							//System.out.println("false.");
-						}
+						q = q.getTail();
 					}
-					q = q.getTail();
 				}
 			}
 		}while(repeat);
