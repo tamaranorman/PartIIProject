@@ -30,31 +30,31 @@ public class Comparison {
 				try {
 					String[] inputs = input.split("-");
 					GoalMappingPair goal;
-					long v1 = 0;
-					long v2 = 0;
-					long v3 = 0;
+					StatsContainer s1 = new StatsContainer();
+					StatsContainer s2 = new StatsContainer();
+					StatsContainer s3 = new StatsContainer();
+					long start;
+					long finish;
 					for (int i = 0; i < 10; i++){
 						goal = parser.parseGoal(inputs[1]);
-						long s1 = System.nanoTime();
+						start = System.nanoTime();
 						interpreter1.executeQuery(goal, prog, progDict);
-						long e1 = System.nanoTime();
-						v1 += e1 - s1;
+						finish = System.nanoTime();
+						s1.update(finish-start);
 						
 						goal = parser.parseGoal(inputs[1]);
-						long s2 = System.nanoTime();
+						start = System.nanoTime();
 						interpreter2.executeQuery(goal, prog, progDict);
-						long e2 = System.nanoTime();
-						v2 += e2 - s2;
+						finish = System.nanoTime();
+						s2.update(finish-start);
 						
 						goal = parser.parseGoal(inputs[1]);
-						long s3 = System.nanoTime();
+						start = System.nanoTime();
 						interpreter3.executeQuery(goal, prog, progDict);
-						long e3 = System.nanoTime();
-						v3 += e3 - s3;
+						finish = System.nanoTime();
+						s3.update(finish-start);
 					}
-					System.out.println(v1/10);	
-					System.out.println(v2/10);
-					System.out.println(v3/10);
+					//print results
 				} 
 				catch (PrologParserException e) {
 					System.out.println("Query couldn't be executed " + e.getMessage());
