@@ -15,7 +15,7 @@ public class Comparison {
 		Interpreter interpreter2 = new CopyWhenSpanningInterpreter();
 		Interpreter interpreter3 = new StructureSharingInterpreter();
 		
-		Parser parser = new Parser();
+		Parser parser = new BasicParser();
 		Scanner scanner = new Scanner(System.in);
 		
 		System.out.println("Welcome to my prolog interpreter:");

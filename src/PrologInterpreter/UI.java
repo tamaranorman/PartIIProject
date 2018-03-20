@@ -11,7 +11,7 @@ import PrologInterpreter.Structure.Program;
 public class UI {
 
 	public static void main(String[] args) throws IOException {
-		Parser parser = new Parser();
+		Parser parser = new BasicParser();
 		Interpreter interpreter = new SingleThreadedInterpreter();
 		Scanner scanner = new Scanner(System.in);
 		
