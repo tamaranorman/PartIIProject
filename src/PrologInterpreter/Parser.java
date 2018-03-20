@@ -1,4 +1,4 @@
-package PrologInterpreter;
+ package PrologInterpreter;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -1,5 +1,10 @@
 #ignore all compiled files
+
 bin/*
 
+
 #ignore all jars
+
 jars/*
+/bin/
+/target/
