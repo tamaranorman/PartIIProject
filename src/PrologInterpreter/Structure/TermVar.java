@@ -63,19 +63,6 @@ public class TermVar extends Term {
 	}
 
 	@Override
-	public Term spawnCopy(TermVarMapping m) {
-		TermVar t;
-		if (instance == this){
-			t = new TermVar(varNo);
-		}
-		else{
-			t = new TermVar(instance.spawnCopy(m), varNo);
-		}
-		m.replace(this, t);
-		return t;
-	}
-
-	@Override
 	public Term deepCopy(HashMap<Term, Term> map) {
 		if (map.containsKey(this)){
 			return map.get(this);

@@ -19,10 +19,6 @@ public class Goal {
 		return new Goal(head, tail == null ? null : tail.shallowCopy());
 	}
 	
-	public Goal spawnCopy(TermVarMapping m) {
-		return new Goal(head.spawnCopyCons(m), tail == null ? null : tail.spawnCopy(m));
-	}
-	
 	public Goal deepCopy(HashMap<Term, Term> map) {
 		return new Goal(head.deepCopyCons(map), tail == null ? null : tail.deepCopy(map));
 	}

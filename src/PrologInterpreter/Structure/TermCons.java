@@ -183,11 +183,6 @@ public class TermCons extends Term{
 	}
 	
 	@Override
-	public Term spawnCopy(TermVarMapping m) {
-		return spawnCopyCons(m);
-	}
-
-	@Override
 	public Term deepCopy(HashMap<Term, Term> map) {
 		return deepCopyCons(map);
 	}
@@ -199,17 +194,6 @@ public class TermCons extends Term{
 		Term[] argsCopy = new Term[arity];
 		for (int i = 0; i < arity; i ++){
 			argsCopy[i] = args[i].copy();
-		}
-		return new TermCons(atom, arity, argsCopy, containsVar);
-	}
-	
-	protected TermCons spawnCopyCons(TermVarMapping m) {
-		if (!containsVar){
-			return this;
-		}
-		Term[] argsCopy = new Term[arity];
-		for (int i = 0; i < arity; i ++){
-			argsCopy[i] = args[i].spawnCopy(m);
 		}
 		return new TermCons(atom, arity, argsCopy, containsVar);
 	}
