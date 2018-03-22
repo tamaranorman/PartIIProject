@@ -74,7 +74,7 @@ public class StructureSharingInterpreter implements Interpreter{
 						}
 						if (goal.getHead().canUnify(q.getHead().getHead())){
 							Clause c = q.getHead().deepCopy();
-							final Goal g = goal.shallowCopy();
+							final Goal g = goal;
 							UnificationListHolder l = new UnificationListHolder(list.getList());
 							if(g.getHead().unifySharing(c.getHead(), l, l.getList())){
 								Goal h = Goal.append(c.getBody(), goal.getTail());

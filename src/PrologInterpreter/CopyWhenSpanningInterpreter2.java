@@ -9,6 +9,7 @@ import PrologInterpreter.Structure.Goal;
 import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
 import PrologInterpreter.Structure.Term;
+import PrologInterpreter.Structure.TermVar;
 import PrologInterpreter.Structure.TermVarMapping;
 
 public class CopyWhenSpanningInterpreter2 implements Interpreter {

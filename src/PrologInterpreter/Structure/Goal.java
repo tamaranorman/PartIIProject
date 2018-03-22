@@ -15,10 +15,6 @@ public class Goal {
 		return new Goal(head.copyCons(), tail == null ? null : tail.copy());
 	}
 	
-	public Goal shallowCopy(){
-		return new Goal(head, tail == null ? null : tail.shallowCopy());
-	}
-	
 	public Goal deepCopy(HashMap<Term, Term> map) {
 		return new Goal(head.deepCopyCons(map), tail == null ? null : tail.deepCopy(map));
 	}
