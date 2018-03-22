@@ -40,17 +40,14 @@ public class TermVar extends Term {
 	
 	@Override
 	public boolean unifySharing(Term t, UnificationListHolder holder, UnificationList list) {
-		if(this.equals(list.getVar())){//Need to make no not value
-			return list.getValue().unifySharing(t, holder, holder.getList());
+		while(list.getPrev() != null) {
+			if(this.equalsVar(list.getVar())){//Need to make no not value
+				return list.getValue().unifySharing(t, holder, holder.getList());
+			}
+			list = list.getPrev();
 		}
-		/*if (t.equals(list.getVar())){
-			return this.unifySharing(list.getValue(), holder, list.getPrev());
-		}*/
-		if (list.getPrev() == null){
-			holder.addToList(this, t);
-			return true;
-		}
-		return unifySharing(t, holder, list.getPrev());
+		holder.addToList(this, t);
+		return true;
 	}
 
 	@Override
