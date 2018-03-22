@@ -74,16 +74,15 @@ public class StructureSharingInterpreter implements Interpreter{
 						}
 						if (goal.getHead().canUnify(q.getHead().getHead())){
 							Clause c = q.getHead().deepCopy();
-							final Goal g = goal;
 							UnificationListHolder l = new UnificationListHolder(list.getList());
-							if(g.getHead().unifySharing(c.getHead(), l, l.getList())){
-								Goal h = Goal.append(c.getBody(), goal.getTail());
-								if(h == null) {
+							if(goal.getHead().unifySharing(c.getHead(), l, l.getList())){
+								Goal g = Goal.append(c.getBody(), goal.getTail());
+								if(g == null) {
 									map.showAnswer(l);
 								}
 								else{
 									if (q.getTail() == null || i == 0){
-										goal = h;
+										goal = g;
 										list = l;
 										repeat = true;
 									}
@@ -91,7 +90,7 @@ public class StructureSharingInterpreter implements Interpreter{
 										Thread worker = new Thread() {
 											@Override 
 											public void run(){
-												solve(h, program, map, l, progDict);
+												solve(g, program, map, l, progDict);
 											}
 										};
 										worker.start();
