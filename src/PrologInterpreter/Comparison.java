@@ -37,6 +37,17 @@ public class Comparison {
 					long finish;
 					for (int i = 0; i < 10; i++){
 						goal = parser.parseGoal(inputs[1]);
+						interpreter1.executeQuery(goal, prog, progDict);
+						
+						goal = parser.parseGoal(inputs[1]);
+						interpreter2.executeQuery(goal, prog, progDict);
+						
+						goal = parser.parseGoal(inputs[1]);
+						interpreter3.executeQuery(goal, prog, progDict);
+					}
+					
+					for (int i = 0; i < 100; i++){
+						goal = parser.parseGoal(inputs[1]);
 						start = System.nanoTime();
 						interpreter1.executeQuery(goal, prog, progDict);
 						finish = System.nanoTime();
@@ -54,7 +65,10 @@ public class Comparison {
 						finish = System.nanoTime();
 						s3.update(finish-start);
 					}
-					//print results
+					
+					s1.printResults();
+					s2.printResults();
+					s3.printResults();
 				} 
 				catch (PrologParserException e) {
 					System.out.println("Query couldn't be executed " + e.getMessage());
