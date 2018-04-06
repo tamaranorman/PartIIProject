@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public abstract class Term {
 	protected boolean containsVar;
-	public abstract boolean unify(Term t);
+	public abstract boolean unify(Term t, boolean seq);
 	public abstract Term copy();
 	public abstract String print();
 	public abstract Term deepCopy(HashMap<Term, Term> map);

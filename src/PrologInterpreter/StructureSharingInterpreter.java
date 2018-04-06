@@ -98,9 +98,6 @@ public class StructureSharingInterpreter implements Interpreter{
 									}
 								}
 							}
-							else{
-								//System.out.println("false.");
-							}
 						}
 						q = q.getTail();
 					}

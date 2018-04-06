@@ -14,6 +14,8 @@ public class SingleThreadedInterpreter implements Interpreter {
 	/* (non-Javadoc)
 	 * @see PrologInterpreter.Interpreter#executeQuery(PrologInterpreter.Structure.GoalMappingPair, PrologInterpreter.Structure.Program)
 	 */
+	private final static boolean seq = true;
+	
 	@Override
 	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict){
 		solve(query.getGoal(), rules, query.getMap(), progDict);
@@ -28,10 +30,10 @@ public class SingleThreadedInterpreter implements Interpreter {
 				boolean unifies;
 				switch (goalAtomName){
 					case "is": 
-						unifies = goal.getHead().unifyIs();
+						unifies = goal.getHead().unifyIs(seq);
 						break;
 					case "=":
-						unifies = goal.getHead().unifyEquals();
+						unifies = goal.getHead().unifyEquals(seq);
 						break;
 					case "=\\=":
 						unifies = goal.getHead().unifyNotEqual();
@@ -66,7 +68,7 @@ public class SingleThreadedInterpreter implements Interpreter {
 							i--;
 						}
 						Trail.undo(t);
-						if(goal.getHead().unify(c.getHead())){
+						if(goal.getHead().unify(c.getHead(), seq)){
 							Goal g = Goal.append(c.getBody(), goal.getTail());
 							if(g == null) {
 								map.showAnswer();

@@ -1,6 +1,7 @@
 package PrologInterpreter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -33,6 +34,8 @@ public class Comparison {
 					StatsContainer s1 = new StatsContainer();
 					StatsContainer s2 = new StatsContainer();
 					StatsContainer s3 = new StatsContainer();
+					
+					long[][] values = new long[3][100];
 					long start;
 					long finish;
 					for (int i = 0; i < 10; i++){
@@ -52,23 +55,33 @@ public class Comparison {
 						interpreter1.executeQuery(goal, prog, progDict);
 						finish = System.nanoTime();
 						s1.update(finish-start);
+						values[0][i] = finish-start;
 						
 						goal = parser.parseGoal(inputs[1]);
 						start = System.nanoTime();
 						interpreter2.executeQuery(goal, prog, progDict);
 						finish = System.nanoTime();
 						s2.update(finish-start);
+						values[1][i] = finish-start;
 						
 						goal = parser.parseGoal(inputs[1]);
 						start = System.nanoTime();
 						interpreter3.executeQuery(goal, prog, progDict);
 						finish = System.nanoTime();
 						s3.update(finish-start);
+						values[2][i] = finish-start;
 					}
 					
 					s1.printResults();
 					s2.printResults();
 					s3.printResults();
+					
+					PrintWriter writer = new PrintWriter("output.txt", "UTF-8");
+					for(int i = 0; i < 100; i++) {
+						writer.println(values[0][i] + ", " + values[1][i] + ", " + values[2][i]);
+					}
+					writer.close();
+					
 				} 
 				catch (PrologParserException e) {
 					System.out.println("Query couldn't be executed " + e.getMessage());

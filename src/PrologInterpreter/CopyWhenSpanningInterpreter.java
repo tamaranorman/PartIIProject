@@ -9,11 +9,11 @@ import PrologInterpreter.Structure.Goal;
 import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
 import PrologInterpreter.Structure.Term;
-import PrologInterpreter.Structure.TermVar;
 import PrologInterpreter.Structure.TermVarMapping;
 import PrologInterpreter.Utilities.Literals;
 
 public class CopyWhenSpanningInterpreter implements Interpreter {
+	private final static boolean seq = false;
 	private List<Thread> threads = new LinkedList<Thread>();
 	
 	@Override
@@ -38,10 +38,10 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 				boolean unifies;
 				switch (goalAtomName){
 					case "is": 
-						unifies = goal.getHead().unifyIs();
+						unifies = goal.getHead().unifyIs(seq);
 						break;
 					case "=":
-						unifies = goal.getHead().unifyEquals();
+						unifies = goal.getHead().unifyEquals(seq);
 						break;
 					case "=\\=":
 						unifies = goal.getHead().unifyNotEqual();
@@ -87,7 +87,7 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 								m = map;
 								g = goal;
 							}
-							if(g.getHead().unify(c.getHead())){
+							if(g.getHead().unify(c.getHead(), seq)){
 								final Goal h = Goal.append(c.getBody(), g.getTail());
 								if(h == null) {
 									m.showAnswer();
@@ -111,10 +111,6 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 								}
 							}
 						}
-						else{
-							//System.out.println("false.");
-						}
-
 						q = q.getTail();
 					}
 				}

@@ -26,16 +26,18 @@ public class TermVar extends Term {
 	}
 
 	@Override
-	public boolean unify(Term t) {
+	public boolean unify(Term t, boolean seq) {
 		//if already unified
 		if (instance != this){
-			return instance.unify(t);
+			return instance.unify(t, seq);
 		}
 		else {
-			if (!t.containsVar) {
+			if (seq == false && !t.containsVar) {
 				this.containsVar = false;
 			}
-			Trail.push(this);
+			if (seq) {
+				Trail.push(this);
+			}
 			instance = t;
 			return true;
 		}

@@ -17,20 +17,20 @@ public class TermCons extends Term{
 	}
 
 	@Override
-	public boolean unify(Term t) {
+	public boolean unify(Term t, boolean seq) {
 		if (t instanceof TermCons){
-			return unifyCons((TermCons) t);
+			return unifyCons((TermCons) t, seq);
 		}
 		else if (t instanceof TermVar){
-			return (t.unify(this));
+			return (t.unify(this, seq));
 		}
 		return false;
 	}
 
-	private boolean unifyCons(TermCons t) {
+	private boolean unifyCons(TermCons t, boolean seq) {
 		if (t.arity == arity && t.atom.equals(atom)){
 			for(int i = 0; i < arity; i ++){
-				if(!args[i].unify(t.args[i])){
+				if(!args[i].unify(t.args[i], seq)){
 					return false;
 				}
 			}
@@ -41,7 +41,7 @@ public class TermCons extends Term{
 		}
 	}
 	
-	public boolean unifyIs() {
+	public boolean unifyIs(boolean seq) {
 		if(args[1] instanceof TermVar){
 			if (!((TermVar)args[1]).isUnunified()){
 				return false;
@@ -49,7 +49,7 @@ public class TermCons extends Term{
 		}
 		try {
 			TermCons lhs = new TermCons(new Atom(String.valueOf(args[1].evaluate())), 0, null, false);
-			return args[0].unify(lhs);
+			return args[0].unify(lhs, seq);
 		}
 		catch(NumberFormatException e){
 			System.out.println("is cannot be used if the expression is not an integer");
@@ -57,8 +57,8 @@ public class TermCons extends Term{
 		}
 	}
 	
-	public boolean unifyEquals() {
-		return args[0].unify(args[1]);
+	public boolean unifyEquals(boolean seq) {
+		return args[0].unify(args[1], seq);
 	}
 
 	public boolean unifyNotEqual() {
