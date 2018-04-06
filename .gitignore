@@ -6,5 +6,6 @@ bin/*
 #ignore all jars
 
 jars/*
-/bin/
-/target/
+
+output.txt
+target/*

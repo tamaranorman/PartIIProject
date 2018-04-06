@@ -14,14 +14,15 @@ import PrologInterpreter.Utilities.Literals;
 
 public class CopyWhenSpanningInterpreter implements Interpreter {
 	private final static boolean seq = false;
-	private List<Thread> threads = new LinkedList<Thread>();
+	private List<Thread> threads;
 	
 	@Override
 	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
 		threads = new LinkedList<Thread>();
 		solve(query.getGoal(), rules, query.getMap(), progDict);
 		try {
-			for (int i = 0; i < threads.size(); i++){
+			int t = threads.size();
+			for (int i = 0; i < t; i++){
 				threads.get(i).join();
 			}
 		} catch (InterruptedException e) {

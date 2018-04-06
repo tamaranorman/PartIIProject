@@ -13,14 +13,15 @@ import PrologInterpreter.Structure.UnificationListHolder;
 import PrologInterpreter.Utilities.Literals;
 
 public class StructureSharingInterpreter implements Interpreter{
-	private List<Thread> threads = new LinkedList<Thread>();
+	private List<Thread> threads;
 
 	@Override
 	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
 		threads = new LinkedList<Thread>();
 		solve(query.getGoal(), rules, query.getMap(), new UnificationListHolder(), progDict);
 		try {
-			for (int i = 0; i < threads.size(); i++){
+			int t = threads.size();
+			for (int i = 0; i < t; i++){
 				threads.get(i).join();
 			}
 		} catch (InterruptedException e) {

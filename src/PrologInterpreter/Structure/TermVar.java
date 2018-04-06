@@ -46,7 +46,7 @@ public class TermVar extends Term {
 	@Override
 	public boolean unifySharing(Term t, UnificationListHolder holder, UnificationList list) {
 		while(list.getPrev() != null) {
-			if(this.equalsVar(list.getVar())){//Need to make no not value
+			if(this.equalsVar(list.getVar())){
 				return list.getValue().unifySharing(t, holder, holder.getList());
 			}
 			list = list.getPrev();
