@@ -23,7 +23,7 @@ public class Clause {
 		return body;
 	}
 	
-	public String print() {
+	/*public String print() {
 		String s = head.print();
 		if (body == null){
 			s += " :- true";
@@ -32,7 +32,7 @@ public class Clause {
 			s += " :- " + body.print();
 		}
 		return s;
-	}
+	}*/
 
 	public Clause deepCopy() {
 		HashMap<Term, Term> map = new HashMap<>();

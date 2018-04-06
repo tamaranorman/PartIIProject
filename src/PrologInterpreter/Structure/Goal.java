@@ -28,13 +28,13 @@ public class Goal {
 		}
 	}
 
-	public String print() {
+	/*public String print() {
 		String s = head.print();
 		if (tail != null){
 			s += tail.print();
 		}
 		return s;
-	}
+	}*/
 	
 	public TermCons getHead() {
 		return head;

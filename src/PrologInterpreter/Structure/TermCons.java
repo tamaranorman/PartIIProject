@@ -198,7 +198,7 @@ public class TermCons extends Term{
 		return new TermCons(atom, arity, argsCopy, containsVar);
 	}
 	
-	public <Terms> TermCons deepCopyCons(HashMap<Term, Term> map) {
+	public TermCons deepCopyCons(HashMap<Term, Term> map) {
 		if (!containsVar){
 			return this;
 		}

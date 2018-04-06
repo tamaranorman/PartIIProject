@@ -19,11 +19,11 @@ public class UnificationListHolder {
 		list = new UnificationList(var, value, list);
 	}
 	
-	public UnificationListHolder getPrevious(){
+	/*public UnificationListHolder getPrevious(){
 		return new UnificationListHolder(list.getPrev());
-	}
+	}*/
 
-	public boolean isNull() {
+	/*public boolean isNull() {
 		return list.getPrev() == null && list.getValue() == null && list.getVar() == null;
-	}
+	}*/
 }

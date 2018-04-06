@@ -20,7 +20,7 @@ public class SingleThreadedInterpreter implements Interpreter {
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map, HashMap<String, Integer> progDict){
-		boolean repeat = false;
+		boolean repeat;
 		do {
 			repeat = false;
 			String goalAtomName = goal.getHead().getAtom().getAtomName();
@@ -65,7 +65,7 @@ public class SingleThreadedInterpreter implements Interpreter {
 						if (c.getHead().getAtom().getAtomName().equals(name)) {
 							i--;
 						}
-						Trail.Undo(t);
+						Trail.undo(t);
 						if(goal.getHead().unify(c.getHead())){
 							Goal g = Goal.append(c.getBody(), goal.getTail());
 							if(g == null) {
@@ -81,11 +81,8 @@ public class SingleThreadedInterpreter implements Interpreter {
 								}
 							}
 						}
-						else{
-							//System.out.println("false.");
-						}
 						if (!repeat){
-							Trail.Undo(t);
+							Trail.undo(t);
 						}
 						q = q.getTail();
 					}

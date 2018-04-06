@@ -3,7 +3,7 @@ package PrologInterpreter.Structure;
 import java.util.HashMap;
 
 public abstract class Term {
-	protected final boolean containsVar;
+	protected boolean containsVar;
 	public abstract boolean unify(Term t);
 	public abstract Term copy();
 	public abstract String print();

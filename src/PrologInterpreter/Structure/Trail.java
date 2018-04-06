@@ -10,11 +10,11 @@ public class Trail {
 		tail = t;
 	}
 	
-	public static void Push(TermVar x){
+	public static void push(TermVar x){
 		soFar = new Trail(x, soFar);
 	}
 	
-	public static void Undo(Trail whereTo){
+	public static void undo(Trail whereTo){
 		while(soFar != whereTo){
 			soFar.head.reset();
 			soFar = soFar.tail;

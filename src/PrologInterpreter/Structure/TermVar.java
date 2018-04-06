@@ -32,7 +32,10 @@ public class TermVar extends Term {
 			return instance.unify(t);
 		}
 		else {
-			Trail.Push(this);
+			if (!t.containsVar) {
+				this.containsVar = false;
+			}
+			Trail.push(this);
 			instance = t;
 			return true;
 		}
@@ -53,7 +56,7 @@ public class TermVar extends Term {
 	@Override
 	public Term copy() {
 		if(instance == this){
-			Trail.Push(this);
+			Trail.push(this);
 			instance = new TermVar();
 		}
 		return instance;
@@ -61,6 +64,9 @@ public class TermVar extends Term {
 
 	@Override
 	public Term deepCopy(HashMap<Term, Term> map) {
+		if (!this.containsVar) {
+			return this;
+		}
 		if (map.containsKey(this)){
 			return map.get(this);
 		}
@@ -68,6 +74,10 @@ public class TermVar extends Term {
 			TermVar n = new TermVar();
 			map.put(this, n);
 			return n;
+		}
+		if (!instance.containsVar) {
+			this.containsVar = false;
+			return instance;
 		}
 		return new TermVar(instance.deepCopy(map), timeStamp++);
 	}
