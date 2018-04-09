@@ -1,8 +1,8 @@
 package PrologInterpreter;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
@@ -14,16 +14,15 @@ import PrologInterpreter.Utilities.Literals;
 
 public class CopyWhenSpanningInterpreter implements Interpreter {
 	private final static boolean seq = false;
-	private List<Thread> threads;
+	private BlockingQueue<Thread> threads;
 	
 	@Override
 	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
-		threads = new LinkedList<Thread>();
+		threads = new LinkedBlockingQueue<Thread>();
 		solve(query.getGoal(), rules, query.getMap(), progDict);
 		try {
-			int t = threads.size();
-			for (int i = 0; i < t; i++){
-				threads.get(i).join();
+			while(threads.size() != 0) {
+				threads.take().join();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

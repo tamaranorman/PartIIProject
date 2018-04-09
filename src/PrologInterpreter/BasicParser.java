@@ -14,8 +14,8 @@ import PrologInterpreter.Structure.PrologStructureToStructure;
 public class BasicParser implements Parser {
 	final PrologParser parser;
 	
-	public BasicParser(PrologParser p){
-		parser = p;
+	public BasicParser(){
+		parser = new PrologParser(null);
 	}
 	
 	/* (non-Javadoc)

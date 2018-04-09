@@ -24,17 +24,20 @@ class BasicParserTest {
 	
 	@Test
 	public void testParseClauseSimple(){
+		//Setup of structure
 		BasicParser parser = new BasicParser();
 		HashMap<String, Integer> dictTest = new HashMap<>();
 		boolean exceptionThrown = false;
 		Clause result = null;
 		
+		//Test
 		try {
 			result = parser.parseClause("select([], []).", dictTest);
 		} catch (IOException | PrologParserException e) {
 			exceptionThrown = true;
 		}
 		
+		//Results check
 		assertFalse(exceptionThrown);
 		assertNotNull(result);
 		assertEquals(result.getHead().getAtom().getAtomName(), "select");
@@ -44,12 +47,14 @@ class BasicParserTest {
 	
 	@Test
 	public void testParseClauseIncorrectSyntax(){
+		//Setup of structure
 		BasicParser parser = new BasicParser();
 		HashMap<String, Integer> dictTest = new HashMap<>();
 		boolean exceptionThrown = false;
 		Clause result = null;
 		Exception exceptionTest = null;
 		
+		//Test
 		try {
 			result = parser.parseClause("select([], []", dictTest);
 		} catch (IOException | PrologParserException e) {
@@ -57,6 +62,7 @@ class BasicParserTest {
 			exceptionTest = e;
 		}
 		
+		//Results check
 		assertTrue(exceptionThrown);
 		assertNull(result);
 		assertTrue(exceptionTest instanceof PrologParserException);
@@ -64,17 +70,20 @@ class BasicParserTest {
 	
 	@Test
 	public void testParseClauseWithTail(){
+		//Setup of structure
 		BasicParser parser = new BasicParser();
 		HashMap<String, Integer> dictTest = new HashMap<>();
 		boolean exceptionThrown = false;
 		Clause result = null;
 		
+		//Test
 		try {
 			result = parser.parseClause("select(X, [H|T]) :- select(X, T).", dictTest);
 		} catch (IOException | PrologParserException e) {
 			exceptionThrown = true;
 		}
 		
+		//Results check
 		assertFalse(exceptionThrown);
 		assertNotNull(result);
 		assertEquals(result.getHead().getAtom().getAtomName(), "select");
@@ -84,16 +93,19 @@ class BasicParserTest {
 	
 	@Test
 	public void testParseGoalSimple() {
+		//Setup of structure
 		BasicParser parser = new BasicParser();
 		boolean exceptionThrown = false;
 		GoalMappingPair result = null;
 		
+		//Test
 		try {
 			result = parser.parseGoal("select(A, [1,2,3]).");
 		} catch (IOException | PrologParserException e) {
 			exceptionThrown = true;
 		}
 		
+		//Results check
 		assertFalse(exceptionThrown);
 		assertNotNull(result);
 		assertTrue(result.getMap().containsKey("A"));
@@ -104,16 +116,19 @@ class BasicParserTest {
 	
 	@Test
 	public void testParseGoalMultiple() {
+		//Setup of structure
 		BasicParser parser = new BasicParser();
 		boolean exceptionThrown = false;
 		GoalMappingPair result = null;
 		
+		//Test
 		try {
 			result = parser.parseGoal("select(A, [1,2,3]), select(B, [1,2]), match(A, B).");
 		} catch (IOException | PrologParserException e) {
 			exceptionThrown = true;
 		}
 		
+		//Results check
 		assertFalse(exceptionThrown);
 		assertNotNull(result);
 		assertTrue(result.getMap().containsKey("A"));
@@ -126,11 +141,13 @@ class BasicParserTest {
 	
 	@Test
 	public void testParseGoalFail() {
+		//Setup of structure
 		BasicParser parser = new BasicParser();
 		boolean exceptionThrown = false;
 		GoalMappingPair result = null;
 		Exception exceptionTest = null;
 		
+		//Test
 		try {
 			result = parser.parseGoal("select(A, [1,2,3]), select(B, [1,2]), match(A, B)");
 		} catch (IOException | PrologParserException e) {
@@ -138,6 +155,7 @@ class BasicParserTest {
 			exceptionTest = e;
 		}
 		
+		//Results check
 		assertTrue(exceptionThrown);
 		assertNull(result);
 		assertTrue(exceptionTest instanceof PrologParserException);

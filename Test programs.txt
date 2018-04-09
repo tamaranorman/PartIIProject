@@ -1,6 +1,8 @@
 append([], H, H).
 append([H|T],X, [H|S]) :- append(T, X, S).
 ?- append(A, B, [1, 2, 3, 4, 5]).
+?- append([1,2,3], [B], X).
+?- append([1], [2], [1,2]).
 
 take([H|T], H, T).
 take([H|T], R, [H|S]) :- take(T, R, S).

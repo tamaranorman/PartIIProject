@@ -46,9 +46,6 @@ class TermConsTest {
 		assertEquals(resultCons.print(), "test");
 	}
 	
-	//@Mock
-	//private Term termMoq;
-	
 	@Test
 	void creatingACompoundTerm() {
 		Atom t = new Atom("test");
@@ -78,12 +75,22 @@ class TermConsTest {
 	
 	@Test
 	void printingACompoundTermWithMockedTerms() {
+		//Setup mocks
 		Term a = mock(Term.class);
 		when(a.print()).thenReturn("A");
-		Atom t = new Atom("test");
-		TermCons test = new TermCons(t, 2, new Term[] {a, a}, false);
-				
-		assertEquals("test(A, A)", test.print());
+		Term b = mock(Term.class);
+		when(b.print()).thenReturn("B");
+		Atom t = mock(Atom.class);
+		when(t.getAtomName()).thenReturn("test");
+		
+		//Create test object
+		TermCons test = new TermCons(t, 2, new Term[] {a, b}, false);
+		
+		//Test output and verify correct calls made
+		assertEquals("test(A, B)", test.print());
+		verify(a, times(1)).print();
+		verify(b, times(1)).print();
+		verify(t, times(1)).getAtomName();
 	}
 	
 	@Test
