@@ -3,10 +3,14 @@ package PrologInterpreter.Structure;
 public class Program {
 	private final Clause head;
 	private Program tail;
+	private static Program last = null;
 	
-	public Program(Clause h, Program t){
+	public Program(Clause h){
 		head = h;
-		tail = t;
+		if (last != null) {
+			last.tail = this;
+		}
+		last = this;
 	}
 
 	public Clause getHead() {
@@ -16,10 +20,5 @@ public class Program {
 	public Program getTail() {
 		return tail;
 	}
-	
-	public void setTail(Program t){
-		if (tail == null){
-			tail = t;
-		}
-	}
+
 }

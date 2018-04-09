@@ -27,14 +27,6 @@ public class Goal {
 			return new Goal(l.head, append(l.tail, m));
 		}
 	}
-
-	/*public String print() {
-		String s = head.print();
-		if (tail != null){
-			s += tail.print();
-		}
-		return s;
-	}*/
 	
 	public TermCons getHead() {
 		return head;

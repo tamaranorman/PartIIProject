@@ -9,3 +9,4 @@ jars/*
 
 output.txt
 target/*
+/target/

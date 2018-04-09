@@ -23,7 +23,6 @@ public class Comparison {
 		System.out.println("Please enter rules and queries prefixing queries with \"?-\"");
 		
 		Program prog = null;
-		Program last = null;
 		HashMap<String, Integer> progDict = new HashMap<String, Integer>();
 		while (scanner.hasNext()){
 			String input = scanner.nextLine();
@@ -89,14 +88,9 @@ public class Comparison {
 			}
 			else {
 				try {
-					Program c = new Program(parser.parseClause(input, progDict), null);
+					Program c = new Program(parser.parseClause(input, progDict));
 					if (prog == null){
 						prog = c;
-						last = c;
-					}
-					else {
-						last.setTail(c);
-						last = c;
 					}
 				}
 				catch(PrologParserException e) {

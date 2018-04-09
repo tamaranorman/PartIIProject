@@ -30,11 +30,11 @@ public class TermVarMapping {
 
 	public void showAnswer(){
 		int size = map.size();
-		String[] values = map.keySet().toArray(new String[size]);
 		if (size == 0){
-			System.out.println("yes");
+			System.out.println("true");
 		}
 		else {
+			String[] values = map.keySet().toArray(new String[size]);
 			for(int i = 0; i < size-1; i++){
 				System.out.println(values[i] + " = " + map.get(values[i]).print() + ",");
 			}
@@ -44,11 +44,11 @@ public class TermVarMapping {
 	
 	public void showAnswer(UnificationListHolder holder) {
 		int size = map.size();
-		String[] values = map.keySet().toArray(new String[size]);
 		if (size == 0){
-			System.out.println("yes");
+			System.out.println("true");
 		}
 		else {
+			String[] values = map.keySet().toArray(new String[size]);
 			for(int i = 0; i < size-1; i++){
 				System.out.println(values[i] + " = " + map.get(values[i]).print(holder.getList(), holder) + ",");
 			}

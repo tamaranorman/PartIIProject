@@ -187,7 +187,7 @@ public class TermCons extends Term{
 		return deepCopyCons(map);
 	}
 	
-	protected TermCons copyCons() {
+	public TermCons copyCons() {
 		if (!containsVar){
 			return this;
 		}
@@ -222,14 +222,14 @@ public class TermCons extends Term{
 
 	@Override
 	public String print() {
-		if (atom == Literals.consAtom){
+		if (atom.equals(Literals.consAtom)){
 			return "[" + printList();
 		}
 		String p = atom.getAtomName();
 		if (arity > 0){
-			p += "(";
-			for (int i = 0; i < arity; i++){
-				p += args[i].print();
+			p += "(" + args[0].print();
+			for (int i = 1; i < arity; i++){
+				p += ", " + args[i].print();
 			}
 			p += ")";
 		}
@@ -246,7 +246,7 @@ public class TermCons extends Term{
 		if (arity > 0){
 			p += "(";
 			for (int i = 0; i < arity; i++){
-				p += args[i].print(list, fixedList);
+				p += args[i].print(list, fixedList) + ", ";
 			}
 			p += ")";
 		}
@@ -325,6 +325,9 @@ public class TermCons extends Term{
 	}
 
 	public boolean contains(TermVar instance) {
+		if (!containsVar) {
+			return false;
+		}
 		for(int i = 0; i < arity; i++){
 			if (args[i] instanceof TermVar){
 				if (((TermVar)args[i]).equalsVar(instance)){
