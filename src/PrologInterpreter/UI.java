@@ -2,6 +2,7 @@ package PrologInterpreter;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Queue;
 import java.util.Scanner;
 
 import com.igormaznitsa.prologparser.exceptions.PrologParserException;
@@ -25,7 +26,13 @@ public class UI {
 			if (input.startsWith("?-")){
 				try {
 					String[] inputs = input.split("-");
-					interpreter.executeQuery(parser.parseGoal(inputs[1]), prog, progDict);
+					Queue<String[]> results = interpreter.executeQuery(parser.parseGoal(inputs[1]), prog, progDict);
+					while(!results.isEmpty()) {
+						String[] values = results.remove();
+						for(String v : values) {
+							System.out.println(v);
+						}
+					}
 				} catch (PrologParserException e) {
 					System.out.println("Query couldn't be executed " + e.getMessage());
 				}

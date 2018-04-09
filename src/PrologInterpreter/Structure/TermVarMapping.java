@@ -28,32 +28,38 @@ public class TermVarMapping {
 		return map.keySet();
 	}
 
-	public void showAnswer(){
+	public String[] showAnswer(){
 		int size = map.size();
+		String[] result;
 		if (size == 0){
-			System.out.println("true");
+			result = new String[] {"true"};
 		}
 		else {
 			String[] values = map.keySet().toArray(new String[size]);
+			result = new String[size];
 			for(int i = 0; i < size-1; i++){
-				System.out.println(values[i] + " = " + map.get(values[i]).print() + ",");
+				result[i] = values[i] + " = " + map.get(values[i]).print() + ",";
 			}
-			System.out.println(values[size -1] + " = " + map.get(values[size -1]).print() + ";");
+			result[size-1] = values[size -1] + " = " + map.get(values[size -1]).print() + ";";
 		}
+		return result;
 	}
 	
-	public void showAnswer(UnificationListHolder holder) {
+	public String[] showAnswer(UnificationListHolder holder) {
 		int size = map.size();
+		String[] result;
 		if (size == 0){
-			System.out.println("true");
+			result = new String[] {"true"};
 		}
 		else {
 			String[] values = map.keySet().toArray(new String[size]);
+			result = new String[size];
 			for(int i = 0; i < size-1; i++){
-				System.out.println(values[i] + " = " + map.get(values[i]).print(holder.getList(), holder) + ",");
+				result[i] = values[i] + " = " + map.get(values[i]).print(holder.getList(), holder) + ",";
 			}
-			System.out.println(values[size -1] + " = " + map.get(values[size -1]).print(holder.getList(), holder) + ";");
+			result[size-1] = values[size -1] + " = " + map.get(values[size -1]).print(holder.getList(), holder) + ";";
 		}
+		return result;
 	}
 
 	public void clear() {

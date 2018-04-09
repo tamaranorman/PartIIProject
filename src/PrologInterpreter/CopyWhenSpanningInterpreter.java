@@ -1,6 +1,7 @@
 package PrologInterpreter;
 
 import java.util.HashMap;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -15,10 +16,12 @@ import PrologInterpreter.Utilities.Literals;
 public class CopyWhenSpanningInterpreter implements Interpreter {
 	private final static boolean seq = false;
 	private BlockingQueue<Thread> threads;
+	private static Queue<String[]> results;
 	
 	@Override
-	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
+	public Queue<String[]> executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
 		threads = new LinkedBlockingQueue<Thread>();
+		results = new LinkedBlockingQueue<String[]>();
 		solve(query.getGoal(), rules, query.getMap(), progDict);
 		try {
 			while(threads.size() != 0) {
@@ -27,6 +30,7 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		return results.size() != 0 ? results : Literals.falseQuery;
 	}
 
 	private void solve(Goal goal, final Program program, TermVarMapping map, HashMap<String, Integer> progDict) {
@@ -56,7 +60,7 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 				if (unifies){
 					Goal g = goal.getTail();
 					if(g == null) {
-						map.showAnswer();  
+						results.add(map.showAnswer());  
 					}
 					else{
 						goal = g;
@@ -90,7 +94,7 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 							if(g.getHead().unify(c.getHead(), seq)){
 								final Goal h = Goal.append(c.getBody(), g.getTail());
 								if(h == null) {
-									m.showAnswer();
+									results.add(m.showAnswer());
 								}
 								else{
 									if (q.getTail() == null || i == 0){

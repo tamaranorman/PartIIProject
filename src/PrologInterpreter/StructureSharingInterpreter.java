@@ -1,8 +1,9 @@
 package PrologInterpreter;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
@@ -13,20 +14,22 @@ import PrologInterpreter.Structure.UnificationListHolder;
 import PrologInterpreter.Utilities.Literals;
 
 public class StructureSharingInterpreter implements Interpreter{
-	private List<Thread> threads;
+	private BlockingQueue<Thread> threads;
+	private static Queue<String[]> results;
 
 	@Override
-	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
-		threads = new LinkedList<Thread>();
+	public Queue<String[]> executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
+		threads = new LinkedBlockingQueue<Thread>();
+		results = new LinkedBlockingQueue<String[]>();
 		solve(query.getGoal(), rules, query.getMap(), new UnificationListHolder(), progDict);
 		try {
-			int t = threads.size();
-			for (int i = 0; i < t; i++){
-				threads.get(i).join();
+			while(threads.size() != 0) {
+				threads.take().join();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		return results.size() != 0 ? results : Literals.falseQuery;
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map, UnificationListHolder list, HashMap<String, Integer> progDict){
@@ -56,7 +59,7 @@ public class StructureSharingInterpreter implements Interpreter{
 				if (unifies){
 					Goal g = goal.getTail();
 					if(g == null) {
-						map.showAnswer();  
+						results.add(map.showAnswer());  
 					}
 					else{
 						goal = g;
@@ -79,7 +82,7 @@ public class StructureSharingInterpreter implements Interpreter{
 							if(goal.getHead().unifySharing(c.getHead(), l, l.getList())){
 								Goal g = Goal.append(c.getBody(), goal.getTail());
 								if(g == null) {
-									map.showAnswer(l);
+									results.add(map.showAnswer(l));
 								}
 								else{
 									if (q.getTail() == null || i == 0){

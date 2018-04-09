@@ -1,6 +1,8 @@
 package PrologInterpreter;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
@@ -15,10 +17,13 @@ public class SingleThreadedInterpreter implements Interpreter {
 	 * @see PrologInterpreter.Interpreter#executeQuery(PrologInterpreter.Structure.GoalMappingPair, PrologInterpreter.Structure.Program)
 	 */
 	private final static boolean seq = true;
+	private static Queue<String[]> results;
 	
 	@Override
-	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict){
+	public Queue<String[]> executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict){
+		results = new LinkedList<String[]>();
 		solve(query.getGoal(), rules, query.getMap(), progDict);
+		return results.size() != 0 ? results : Literals.falseQuery;
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map, HashMap<String, Integer> progDict){
@@ -48,7 +53,7 @@ public class SingleThreadedInterpreter implements Interpreter {
 				if (unifies){
 					Goal g = goal.getTail();
 					if(g == null) {
-						map.showAnswer();  
+						results.add(map.showAnswer());  
 					}
 					else{
 						goal = g;
@@ -71,7 +76,7 @@ public class SingleThreadedInterpreter implements Interpreter {
 						if(goal.getHead().unify(c.getHead(), seq)){
 							Goal g = Goal.append(c.getBody(), goal.getTail());
 							if(g == null) {
-								map.showAnswer();
+								results.add(map.showAnswer());
 							}
 							else{
 								if (q.getTail() == null){

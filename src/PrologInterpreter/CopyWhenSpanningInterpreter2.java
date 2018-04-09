@@ -3,6 +3,8 @@ package PrologInterpreter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
@@ -10,14 +12,17 @@ import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
 import PrologInterpreter.Structure.Term;
 import PrologInterpreter.Structure.TermVarMapping;
+import PrologInterpreter.Utilities.Literals;
 
 public class CopyWhenSpanningInterpreter2 implements Interpreter {
 	private final static boolean seq = false;
 	private List<Thread> threads = new LinkedList<Thread>();
+	Queue<String[]> results = new ConcurrentLinkedQueue<String[]>();
 	
 	@Override
-	public void executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
+	public Queue<String[]> executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
 		threads = new LinkedList<Thread>();
+		results = new ConcurrentLinkedQueue<String[]>();
 		solve(query.getGoal(), rules, query.getMap());
 		try {
 			for (int i = 0; i < threads.size(); i++){
@@ -28,6 +33,7 @@ public class CopyWhenSpanningInterpreter2 implements Interpreter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return results.size() != 0 ? results : Literals.falseQuery;
 	}
 
 	private void solve(Goal goal, final Program program, TermVarMapping map) {
@@ -54,7 +60,7 @@ public class CopyWhenSpanningInterpreter2 implements Interpreter {
 						if(g.getHead().unify(c.getHead(), seq)){
 							final Goal h = Goal.append(c.getBody(), g.getTail());
 							if(h == null) {
-								m.showAnswer();
+								results.add(m.showAnswer());
 							}
 							else{
 								solve(h, program, m);
