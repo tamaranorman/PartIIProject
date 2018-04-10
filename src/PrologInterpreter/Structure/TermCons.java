@@ -86,7 +86,7 @@ public class TermCons extends Term{
 			int b = args[1].evaluate();
 			return a - b;
 		}
-		if (atom.getAtomName().equals("//")){
+		if (atom.getAtomName().equals("/")){
 			int a = args[0].evaluate();
 			int b = args[1].evaluate();
 			return a / b;
@@ -167,7 +167,7 @@ public class TermCons extends Term{
 			int b = args[1].evaluateSharing(holder, holder.getList());
 			return a - b;
 		}
-		if (atom.getAtomName().equals("//")){
+		if (atom.getAtomName().equals("/")){
 			int a = args[0].evaluateSharing(holder, holder.getList());
 			int b = args[1].evaluateSharing(holder, holder.getList());
 			return a / b;

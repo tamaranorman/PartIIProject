@@ -23,3 +23,10 @@ checkDiagonals([Y|T], X) :- checkCantDiagonallyTake(T, Y, 1), NewX is X + 1, che
 nQueens(N, R) :- generateNList(N, [], X), perm(X, R), checkDiagonals(R).
 ?- nQueens(1, R).
 ?- nQueens(4, R).
+
+multiplication(A, B, C) :- C is A * B.
+division(A, B, C) :- C is A / B.
+?- multiplication(3, 2, A).
+?- multiplication(3, 1, 6).
+?- division(3, 6, 2).
+?- division(8, 2, A).

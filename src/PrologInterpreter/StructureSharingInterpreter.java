@@ -59,7 +59,7 @@ public class StructureSharingInterpreter implements Interpreter{
 				if (unifies){
 					Goal g = goal.getTail();
 					if(g == null) {
-						results.add(map.showAnswer());  
+						results.add(map.showAnswer(list));  
 					}
 					else{
 						goal = g;

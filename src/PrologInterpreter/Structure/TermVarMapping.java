@@ -78,7 +78,7 @@ public class TermVarMapping {
 		map.put(text, var);
 	}
 
-	public void replace(TermVar termVar, TermVar newTerm) {
+	/*public void replace(TermVar termVar, TermVar newTerm) {
 		int size = map.size();
 		String[] values = map.keySet().toArray(new String[size]);
 		for(String v : values){
@@ -92,9 +92,9 @@ public class TermVarMapping {
 				}
 			}
 		}
-	}
+	}*/
 
-	public boolean containsValue(TermVar termVar) {
+	/*public boolean containsValue(TermVar termVar) {
 		int size = map.size();
 		String[] values = map.keySet().toArray(new String[size]);
 		for(String v : values){
@@ -103,5 +103,5 @@ public class TermVarMapping {
 			}
 		}
 		return false;
-	}
+	}*/
 }
