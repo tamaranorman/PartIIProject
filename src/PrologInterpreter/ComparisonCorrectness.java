@@ -2,6 +2,7 @@ package PrologInterpreter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.Scanner;
@@ -26,38 +27,37 @@ public class ComparisonCorrectness {
 		
 		Program prog = null;
 		HashMap<String, Integer> progDict = new HashMap<String, Integer>();
-		while (scanner.hasNext()){
+		while (scanner.hasNext()) {
 			String input = scanner.nextLine();
-			if (input.startsWith("?-")){
-				try {
-					String[] inputs = input.split("-");
-					GoalMappingPair goal;
-					
-					goal = parser.parseGoal(inputs[1]);
-					Queue<String[]> result1 = interpreter1.executeQuery(goal, prog, progDict);
-						
-					goal = parser.parseGoal(inputs[1]);
-					Queue<String[]> result2 = interpreter2.executeQuery(goal, prog, progDict);
-						
-					goal = parser.parseGoal(inputs[1]);
-					Queue<String[]> result3 = interpreter3.executeQuery(goal, prog, progDict);
-					
-					System.out.print(checkEquality(result1, result2, result3));
-					
-				} 
-				catch (PrologParserException e) {
-					System.out.println("Query couldn't be executed " + e.getMessage());
-				}
-			}
-			else {
-				try {
-					Program c = new Program(parser.parseClause(input, progDict));
-					if (prog == null){
-						prog = c;
+			if (!input.isEmpty()) {
+				if (input.startsWith("?-")) {
+					try {
+						String[] inputs = input.split("-");
+						GoalMappingPair goal;
+
+						goal = parser.parseGoal(inputs[1]);
+						Queue<String[]> result1 = interpreter1.executeQuery(goal, prog, progDict);
+
+						goal = parser.parseGoal(inputs[1]);
+						Queue<String[]> result2 = interpreter2.executeQuery(goal, prog, progDict);
+
+						goal = parser.parseGoal(inputs[1]);
+						Queue<String[]> result3 = interpreter3.executeQuery(goal, prog, progDict);
+
+						System.out.println(checkEquality(result1, result2, result3));
+
+					} catch (PrologParserException e) {
+						System.out.println("Query couldn't be executed " + e.getMessage());
 					}
-				}
-				catch(PrologParserException e) {
-					System.out.println("Line " + input + " couldn't be added. " + e.getMessage());
+				} else {
+					try {
+						Program c = new Program(parser.parseClause(input, progDict));
+						if (prog == null) {
+							prog = c;
+						}
+					} catch (PrologParserException e) {
+						System.out.println("Line " + input + " couldn't be added. " + e.getMessage());
+					}
 				}
 			}
 		}
@@ -86,24 +86,31 @@ public class ComparisonCorrectness {
 		}
 		else {
 			int sizeVariables = result1.peek().length;
-			String[][] v1 = new String[sizeVariables][sizeResults];
-			String[][] v2 = new String[sizeVariables][sizeResults];
-			String[][] v3 = new String[sizeVariables][sizeResults];
+			String[][] v1 = new String[sizeResults][sizeVariables];
+			String[][] v2 = new String[sizeResults][sizeVariables];
+			String[][] v3 = new String[sizeResults][sizeVariables];
 			for(int j = 0; j < sizeResults; j++) {
 				String[] r1 = result1.remove();
 				String[] r2 = result2.remove();
 				String[] r3 = result3.remove();
 				for(int i = 0; i < sizeVariables; i++) {
-					v1[i][j] = r1[i];
-					v2[i][j] = r2[i];
-					v3[i][j] = r3[i];
+					v1[j][i] = r1[i];
+					v2[j][i] = r2[i];
+					v3[j][i] = r3[i];
 				}
 			}
-			for(int j = 0; j < sizeVariables; j ++) {
-				Arrays.sort(v1[j]);
-				Arrays.sort(v2[j]);
-				Arrays.sort(v3[j]);
-				for(int i = 0; i < sizeResults; i++) {
+			Comparator<String[]> c = new Comparator<String[]>() {
+				@Override
+				public int compare(String[] o1, String[] o2) {
+					String quantityOne = o1[1];
+					String quantityTwo = o2[1];
+					return quantityOne.compareTo(quantityTwo);
+				}};
+			Arrays.sort(v1, c);
+			Arrays.sort(v2, c);
+			Arrays.sort(v3, c);
+			for(int j = 0; j < sizeResults; j ++) {
+				for(int i = 0; i < sizeVariables; i++) {
 					if(!v1[j][i].equals(v2[j][i]) || !v1[j][i].equals(v3[j][i])) {
 						return false;
 					}

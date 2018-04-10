@@ -23,29 +23,31 @@ public class UI {
 		HashMap<String, Integer> progDict = new HashMap<String, Integer>();
 		while (scanner.hasNext()){
 			String input = scanner.nextLine();
-			if (input.startsWith("?-")){
-				try {
-					String[] inputs = input.split("-");
-					Queue<String[]> results = interpreter.executeQuery(parser.parseGoal(inputs[1]), prog, progDict);
-					while(!results.isEmpty()) {
-						String[] values = results.remove();
-						for(String v : values) {
-							System.out.println(v);
+			if (!input.isEmpty()) {
+				if (input.startsWith("?-")){
+					try {
+						String[] inputs = input.split("-");
+						Queue<String[]> results = interpreter.executeQuery(parser.parseGoal(inputs[1]), prog, progDict);
+						while(!results.isEmpty()) {
+							String[] values = results.remove();
+							for(String v : values) {
+								System.out.println(v);
+							}
+						}
+					} catch (PrologParserException e) {
+						System.out.println("Query couldn't be executed " + e.getMessage());
+					}
+				}
+				else {
+					try {
+						Program c = new Program(parser.parseClause(input, progDict));
+						if (prog == null){
+							prog = c;
 						}
 					}
-				} catch (PrologParserException e) {
-					System.out.println("Query couldn't be executed " + e.getMessage());
-				}
-			}
-			else {
-				try {
-					Program c = new Program(parser.parseClause(input, progDict));
-					if (prog == null){
-						prog = c;
+					catch(PrologParserException e) {
+						System.out.println("Line " + input + " couldn't be added. " + e.getMessage());
 					}
-				}
-				catch(PrologParserException e) {
-					System.out.println("Line " + input + " couldn't be added. " + e.getMessage());
 				}
 			}
 		}
