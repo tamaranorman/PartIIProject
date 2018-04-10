@@ -29,8 +29,9 @@ public class Literals {
 	public static final String[] SET_VALUES = new String[] { is, equals, notEquals, greaterThan };
 	public static final Set<String> MY_SET = new HashSet<>(Arrays.asList(SET_VALUES));
 	
-	private static final String[] falseStringArray = new String[] {"False"};
-	public static final Queue<String[]> falseQuery = new LinkedList<String[]>() {{
+	private static final String[] falseStringArray = new String[] {"false."};
+	public static final Queue<String[]> falseQuery = new LinkedList<String[]>() {
+	{
 		add(falseStringArray);
 	}};
 }

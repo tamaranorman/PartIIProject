@@ -1,0 +1,25 @@
+append([], H, H).
+append([H|T],X, [H|S]) :- append(T, X, S).
+?- append(A, B, [1, 2, 3, 4, 5]).
+?- append([1], [2], [1,2]).
+
+take([H|T], H, T).
+take([H|T], R, [H|S]) :- take(T, R, S).
+perm([], []).
+perm(L, [H|T]) :- take(L, H, R), perm(R, T).
+?- perm([1,2,3], R).
+?- perm([1,2,3], [3,2,1]).
+?- perm([1,2], [1, 2, 3]).
+
+generateNList(0,L,L).
+generateNList(N,L,R) :- N > 0, P is N-1, generateNList(P, [N|L], R).
+?- generateNList(3, [], R).
+
+checkCantDiagonallyTake([], A, B).
+checkCantDiagonallyTake([H|T], Y, Distance) :- H =\= Y + Distance, H =\= Y - Distance, NewDistance is Distance + 1, checkCantDiagonallyTake(T, Y, NewDistance). 
+checkDiagonals(R) :- checkDiagonals(R, 1).
+checkDiagonals([], A).
+checkDiagonals([Y|T], X) :- checkCantDiagonallyTake(T, Y, 1), NewX is X + 1, checkDiagonals(T, NewX).
+nQueens(N, R) :- generateNList(N, [], X), perm(X, R), checkDiagonals(R).
+?- nQueens(1, R).
+?- nQueens(4, R).

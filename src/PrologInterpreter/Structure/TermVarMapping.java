@@ -32,7 +32,7 @@ public class TermVarMapping {
 		int size = map.size();
 		String[] result;
 		if (size == 0){
-			result = new String[] {"true"};
+			result = new String[] {"true."};
 		}
 		else {
 			String[] values = map.keySet().toArray(new String[size]);
@@ -49,7 +49,7 @@ public class TermVarMapping {
 		int size = map.size();
 		String[] result;
 		if (size == 0){
-			result = new String[] {"true"};
+			result = new String[] {"true."};
 		}
 		else {
 			String[] values = map.keySet().toArray(new String[size]);
