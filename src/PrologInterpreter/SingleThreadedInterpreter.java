@@ -63,13 +63,12 @@ public class SingleThreadedInterpreter implements Interpreter {
 			}
 			else {
 				Program q = program;
-				String name = goal.getHead().getAtom().getAtomName();
-				if (progDict.containsKey(name)) {
-					int i = progDict.get(name);
+				if (progDict.containsKey(goalAtomName)) {
+					int i = progDict.get(goalAtomName);
 					while (q != null && i > 0){
 						Trail t = Trail.note();
 						Clause c = q.getHead().copy();
-						if (c.getHead().getAtom().getAtomName().equals(name)) {
+						if (c.getHead().getAtom().getAtomName().equals(goalAtomName)) {
 							i--;
 						}
 						Trail.undo(t);

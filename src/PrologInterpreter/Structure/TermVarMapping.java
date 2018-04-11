@@ -77,31 +77,4 @@ public class TermVarMapping {
 	public void put(String text, TermVar var) {
 		map.put(text, var);
 	}
-
-	/*public void replace(TermVar termVar, TermVar newTerm) {
-		int size = map.size();
-		String[] values = map.keySet().toArray(new String[size]);
-		for(String v : values){
-			TermVar t = map.get(v);
-			if(t.equalsVar(termVar)){
-				if (t.isUnunified()){
-					map.replace(v, newTerm);
-				}
-				else {
-					t.replace(termVar, newTerm);
-				}
-			}
-		}
-	}*/
-
-	/*public boolean containsValue(TermVar termVar) {
-		int size = map.size();
-		String[] values = map.keySet().toArray(new String[size]);
-		for(String v : values){
-			if(map.get(v).equalsVar(termVar)){
-				return true;
-			}
-		}
-		return false;
-	}*/
 }

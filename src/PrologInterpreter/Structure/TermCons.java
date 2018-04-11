@@ -43,7 +43,7 @@ public class TermCons extends Term{
 	
 	public boolean unifyIs(boolean seq) {
 		if(args[1] instanceof TermVar){
-			if (!((TermVar)args[1]).isUnunified()){
+			if (!((TermVar)args[1]).isUnifiedCons()){
 				return false;
 			}
 		}
@@ -52,7 +52,6 @@ public class TermCons extends Term{
 			return args[0].unify(lhs, seq);
 		}
 		catch(NumberFormatException e){
-			System.out.println("is cannot be used if the expression is not an integer");
 			return false;
 		}
 	}
@@ -132,7 +131,6 @@ public class TermCons extends Term{
 			return args[0].unifySharing(lhs, holder, holder.getList());
 		}
 		catch(NumberFormatException e){
-			System.out.println("is cannot be used if the expression is not an integer");
 			return false;
 		}
 	}
@@ -244,9 +242,9 @@ public class TermCons extends Term{
 		}
 		String p = atom.getAtomName();
 		if (arity > 0){
-			p += "(";
-			for (int i = 0; i < arity; i++){
-				p += args[i].print(list, fixedList) + ", ";
+			p += "(" + args[0].print(list, fixedList);
+			for (int i = 1; i < arity; i++){
+				p += ", " + args[i].print(list, fixedList);
 			}
 			p += ")";
 		}
@@ -322,37 +320,6 @@ public class TermCons extends Term{
 	
 	public Atom getAtom() {
 		return atom;
-	}
-
-	public boolean contains(TermVar instance) {
-		if (!containsVar) {
-			return false;
-		}
-		for(int i = 0; i < arity; i++){
-			if (args[i] instanceof TermVar){
-				if (((TermVar)args[i]).equalsVar(instance)){
-					return true;
-				}
-			}
-			else if (args[i] instanceof TermCons){
-				if (((TermCons)args[i]).contains(instance)){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public void replace(TermVar termVar, TermVar newTerm) {
-		for (int i = 0; i < arity; i++){
-			if (args[i] == termVar){
-				args[i] = newTerm;
-			}
-			else {
-				args[i].replace(termVar, newTerm);
-			}
-		}
 	}
 
 	public boolean canUnify(TermCons head) {

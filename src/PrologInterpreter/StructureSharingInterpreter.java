@@ -69,11 +69,10 @@ public class StructureSharingInterpreter implements Interpreter{
 			}
 			else {
 				Program q = program;
-				String name = goal.getHead().getAtom().getAtomName();
-				if (progDict.containsKey(name)) {
-					int i = progDict.get(name);
-					while (q != null){
-						if (q.getHead().getHead().getAtom().getAtomName().equals(name)) {
+				if (progDict.containsKey(goalAtomName)) {
+					int i = progDict.get(goalAtomName);
+					while (q != null && !repeat){
+						if (q.getHead().getHead().getAtom().getAtomName().equals(goalAtomName)) {
 							i--;
 						}
 						if (goal.getHead().canUnify(q.getHead().getHead())){

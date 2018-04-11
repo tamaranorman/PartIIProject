@@ -10,6 +10,13 @@ perm(L, [H|T]) :- take(L, H, R), perm(R, T).
 ?- perm([1,2,3], R).
 ?- perm([1,2,3], [3,2,1]).
 ?- perm([1,2], [1, 2, 3]).
+?- perm([a(1), b(2)], R).
+
+a(1, 3).
+a(4, 2).
+b(2).
+b(7).
+?- a(X, Y), b(Z), perm([a(X, Y), b(Z)], R).
 
 generateNList(0,L,L).
 generateNList(N,L,R) :- N > 0, P is N-1, generateNList(P, [N|L], R).
@@ -24,9 +31,18 @@ nQueens(N, R) :- generateNList(N, [], X), perm(X, R), checkDiagonals(R).
 ?- nQueens(1, R).
 ?- nQueens(4, R).
 
-multiplication(A, B, C) :- C is A * B.
-division(A, B, C) :- C is A / B.
-?- multiplication(3, 2, A).
-?- multiplication(3, 1, 6).
-?- division(3, 6, 2).
-?- division(8, 2, A).
+eval(mult(A, B), C) :- C is A * B.
+eval(div(A, B), C) :- C is A/B.
+?- eval(mult(3,2), A).
+?- eval(mult(3,1), 6).
+?- eval(div(3,6) , 2).
+?- eval(div(8,2), A).
+
+c(X) :- X = a.
+?- c(a).
+?- c(c).
+
+e(X) :- d(X).
+d(6).
+f(X) :- e(Y), X is Y.
+?- f(X).

@@ -13,12 +13,6 @@ public class TermVar extends Term {
 		varNo = timeStamp++;
 	}
 	
-	public TermVar(int n){
-		super(true);
-		instance = this;
-		varNo = n;
-	}
-	
 	public TermVar(Term i, int n) {
 		super(true);
 		instance = i;
@@ -46,7 +40,7 @@ public class TermVar extends Term {
 	@Override
 	public boolean unifySharing(Term t, UnificationListHolder holder, UnificationList list) {
 		while(list.getPrev() != null) {
-			if(this.equalsVar(list.getVar())){
+			if(this.varNo == list.getVar().varNo){
 				return list.getValue().unifySharing(t, holder, holder.getList());
 			}
 			list = list.getPrev();
@@ -116,31 +110,6 @@ public class TermVar extends Term {
 		}
 	}
 
-	public boolean equalsVar(TermVar termVar) {
-		if (this == termVar){
-			return true;
-		}
-		if (instance == this && termVar.instance == termVar){
-			return (this == termVar);
-		}
-		if (instance == this && termVar.instance instanceof TermCons){
-			return ((TermCons)(termVar.instance)).contains((TermVar)instance);
-		}
-		if (instance == this){
-			return (termVar.equalsVar(this));
-		}
-		if (instance instanceof TermCons && termVar.instance instanceof TermCons){
-			return (instance == termVar.instance);
-		}
-		if (instance instanceof TermCons){
-			return termVar.equalsVar(this);
-		}
-		if (instance instanceof TermVar){
-			return ((TermVar)instance).equalsVar(termVar);
-		}
-		return false;
-	}
-
 	public boolean isUnunified() {
 		return (instance == this);
 	}
@@ -159,26 +128,17 @@ public class TermVar extends Term {
 	
 	public boolean isUnifiedSharingCons(UnificationListHolder holder, UnificationList list) {
 		if (list.getVar() != null){
-			if (list.getVar() == this){
+			if (list.getVar().varNo == this.varNo){
 				if (list.getValue() instanceof TermCons){
 					return true;
 				}
-				((TermVar)list.getValue()).isUnifiedSharingCons(holder, holder.getList());
+				return ((TermVar)list.getValue()).isUnifiedSharingCons(holder, holder.getList());
 			}
-		}
-		else if (list.getPrev() != null){
 			return isUnifiedSharingCons(holder,  list.getPrev());
 		}
 		return false;
 	}
-
-	@Override
-	public void replace(TermVar termVar, TermVar newTerm) {
-		if (instance != this){
-			instance.replace(termVar, newTerm);
-		}
-	}
-
+	
 	@Override
 	public int evaluate() {
 		return instance.evaluate();

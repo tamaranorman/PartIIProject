@@ -70,18 +70,17 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 			}
 			else{
 				Program q = program;
-				String name = goal.getHead().getAtom().getAtomName();
-				if (progDict.containsKey(name)) {
-					int i = progDict.get(name);
-					while (q != null){
-						if (q.getHead().getHead().getAtom().getAtomName().equals(name)) {
+				if (progDict.containsKey(goalAtomName)) {
+					int i = progDict.get(goalAtomName);
+					while (q != null && !repeat){
+						if (q.getHead().getHead().getAtom().getAtomName().equals(goalAtomName)) {
 							i--;
 						}
 						if (goal.getHead().canUnify(q.getHead().getHead())){
 							Clause c = q.getHead().deepCopy();
 							final TermVarMapping m;
 							final Goal g;
-							if (q.getTail() != null){
+							if (q.getTail() != null && i != 0){
 								HashMap<Term, Term> pairs = new HashMap<>();
 								m = new TermVarMapping(map, pairs);
 								g = goal.deepCopy(pairs);

@@ -20,5 +20,8 @@ public class Program {
 	public Program getTail() {
 		return tail;
 	}
-
+	
+	public static Program getLast() {
+		return last;
+	}
 }
