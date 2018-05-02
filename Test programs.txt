@@ -31,11 +31,8 @@ sudoku(L) :- rows(L), cols(L), box(L).
 
 
 take([H|T], H, T).
-
 take([H|T], R, [H|S]) :- take(T, R, S).
-
 perm([], []).
-
 perm(L, [H|T]) :- take(L, H, R), perm(R, T).
 
 checkCantDiagonallyTake([], A, B).

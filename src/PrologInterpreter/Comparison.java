@@ -14,7 +14,7 @@ public class Comparison {
 	public static void main(String[] args) throws IOException{
 		Interpreter interpreter1 = new SingleThreadedInterpreter();
 		Interpreter interpreter2 = new CopyWhenSpanningInterpreter();
-		Interpreter interpreter3 = new CopyWhenSpanningInterpreterSequential();
+		Interpreter interpreter3 = new CopyWhenSpanningInterpreterThreadPool();
 		
 		Parser parser = new BasicParser();
 		Scanner scanner = new Scanner(System.in);
