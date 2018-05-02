@@ -2,7 +2,6 @@ package PrologInterpreter;
 
 import java.util.HashMap;
 import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;

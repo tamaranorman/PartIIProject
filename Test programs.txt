@@ -57,14 +57,9 @@ fiveQueens(R) :- perm([1,2,3,4,5], R), checkDiagonals(R).
 
 eightQueens(R) :- perm([5,3,1,7,2,8,6,4],R), checkDiagonals(R).
 
-
-
 a(0, L).
 a(N, L) :- N > 0, N1 is N-1, a(N1, L), bigCompute(L).
 bigCompute(0).
 bigCompute(R) :- R > 0, R1 is R-1, bigCompute(R1).
-
-
-
 
 jar cvfm ComparisonCopy.jar manifest.txt PrologInterpreter/*.class PrologInterpreter/Structure/*.class PrologInterpreter/Structure/StructureCreators/*.class PrologInterpreter/Utilities/*.class

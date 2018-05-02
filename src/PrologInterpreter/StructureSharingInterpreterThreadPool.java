@@ -2,8 +2,9 @@ package PrologInterpreter;
 
 import java.util.HashMap;
 import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
@@ -14,26 +15,22 @@ import PrologInterpreter.Structure.TermVarMapping;
 import PrologInterpreter.Structure.UnificationListHolder;
 import PrologInterpreter.Utilities.Literals;
 
-public class StructureSharingInterpreter implements Interpreter{
-	private BlockingQueue<Thread> threads;
+public class StructureSharingInterpreterThreadPool implements Interpreter{
 	private static Queue<String[]> results;
+	private static ThreadPoolExecutor executor;
+	int count;
 
 	@Override
 	public ReturnStructure executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
-		threads = new LinkedBlockingQueue<Thread>();
 		results = new LinkedBlockingQueue<String[]>();
+		executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
+		count = 0;
 		solve(query.getGoal(), rules, query.getMap(), new UnificationListHolder(), progDict);
-		
-		int threadCount = 0;
-		try {
-			while(threads.size() != 0) {
-				threads.take().join();
-				threadCount++;
-			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		while (count > executor.getCompletedTaskCount()) {
+			
 		}
-		return new ReturnStructure(results.size() != 0 ? results : Literals.falseQuery, threadCount);
+		executor.shutdown();
+		return new ReturnStructure(results.size() != 0 ? results : Literals.falseQuery, count);
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map, UnificationListHolder list, HashMap<String, Integer> progDict){
@@ -94,14 +91,9 @@ public class StructureSharingInterpreter implements Interpreter{
 										repeat = true;
 									}
 									else {
-										Thread worker = new Thread() {
-											@Override 
-											public void run(){
-												solve(g, program, map, l, progDict);
-											}
-										};
-										worker.start();
-										threads.add(worker);
+										count++;
+										executor.submit(() -> { solve(g, program, map, l, progDict);
+																return null;});
 									}
 								}
 							}

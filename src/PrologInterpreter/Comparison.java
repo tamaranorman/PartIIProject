@@ -1,7 +1,6 @@
 package PrologInterpreter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -13,20 +12,26 @@ import PrologInterpreter.Structure.Program;
 public class Comparison {
 	public static void main(String[] args) throws IOException{
 		Interpreter interpreter1 = new SingleThreadedInterpreter();
-		Interpreter interpreter2 = new CopyWhenSpanningInterpreter();
+		Interpreter interpreter2 = new CopyWhenSpanningInterpreterSequential();
 		Interpreter interpreter3 = new CopyWhenSpanningInterpreterThreadPool();
+		Interpreter interpreter4 = new CopyWhenSpanningInterpreterForkJoin();
 		
 		Parser parser = new BasicParser();
 		Scanner scanner = new Scanner(System.in);
 		
-		System.out.println("Welcome to my prolog interpreter comparison:");
-		System.out.println("Please enter rules and queries prefixing queries with \"?-\", all results putput in ms");
+		System.out.println("Welcome to my prolog interpreter comparison.");
+		System.out.println("Please enter rules and queries prefixing queries with \"?-\", all results putput in ms.");
+		System.out.println("Enter \"exit.\" to stop running.");
 		
 		Program prog = null;
 		HashMap<String, Integer> progDict = new HashMap<String, Integer>();
-		while (scanner.hasNext()){
+		boolean end = false;
+		while (!end && scanner.hasNext()){
 			String input = scanner.nextLine();
-			if (!input.isEmpty()) {
+			if (input.equals("exit.")) {
+				end = true;
+			}
+			else if (!input.isEmpty()) {
 				if (input.startsWith("?-")){
 					try {
 						String[] inputs = input.split("-");
@@ -34,8 +39,8 @@ public class Comparison {
 						StatsContainer s1 = new StatsContainer();
 						StatsContainer s2 = new StatsContainer();
 						StatsContainer s3 = new StatsContainer();
+						StatsContainer s4 = new StatsContainer();
 
-						long[][] values = new long[3][100];
 						long start;
 						long finish;
 						for (int i = 0; i < 10; i++){
@@ -48,6 +53,9 @@ public class Comparison {
 
 							goal = parser.parseGoal(inputs[1]);
 							s3.setThreads(interpreter3.executeQuery(goal, prog, progDict).getThreads());
+							
+							goal = parser.parseGoal(inputs[1]);
+							s4.setThreads(interpreter3.executeQuery(goal, prog, progDict).getThreads());
 						}
 
 						for (int i = 0; i < 100; i++){
@@ -56,36 +64,34 @@ public class Comparison {
 							interpreter1.executeQuery(goal, prog, progDict);
 							finish = System.nanoTime();
 							s1.update(finish-start);
-							values[0][i] = finish-start;
 
 							goal = parser.parseGoal(inputs[1]);
 							start = System.nanoTime();
 							interpreter2.executeQuery(goal, prog, progDict);
 							finish = System.nanoTime();
 							s2.update(finish-start);
-							values[1][i] = finish-start;
 
 							goal = parser.parseGoal(inputs[1]);
 							start = System.nanoTime();
 							interpreter3.executeQuery(goal, prog, progDict);
 							finish = System.nanoTime();
 							s3.update(finish-start);
-							values[2][i] = finish-start;
+							
+							goal = parser.parseGoal(inputs[1]);
+							start = System.nanoTime();
+							interpreter4.executeQuery(goal, prog, progDict);
+							finish = System.nanoTime();
+							s4.update(finish-start);
 						}
 						
-						System.out.println("Sequential Interpreter:");
+						System.out.println("Sequential Backtracking Interpreter:");
 						s1.printResults2();
-						System.out.println("Multithreaded Interpreter (Copying):");
-						s2.printResults2();
 						System.out.println("Sequential Copying Interpreter:");
+						s2.printResults2();
+						System.out.println("Multi-Threaded Thread Pool Copying Interpreter:");
 						s3.printResults2();
-
-						PrintWriter writer = new PrintWriter("output.txt", "UTF-8");
-						for(int i = 0; i < 100; i++) {
-							writer.println(values[0][i] + ", " + values[1][i] + ", " + values[2][i]);
-						}
-						writer.close();
-
+						System.out.println("Multi-Threaded Fork//Join Copying Interpreter:");
+						s4.printResults2();
 					} 
 					catch (PrologParserException e) {
 						System.out.println("Query couldn't be executed " + e.getMessage());
@@ -105,6 +111,5 @@ public class Comparison {
 			}
 		}
 		scanner.close();
-		System.out.println("Scanner is closed");
 	}
 }

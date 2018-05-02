@@ -3,6 +3,8 @@ package PrologInterpreter;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import PrologInterpreter.Structure.Clause;
@@ -14,26 +16,29 @@ import PrologInterpreter.Structure.TermVarMapping;
 import PrologInterpreter.Structure.UnificationListHolder;
 import PrologInterpreter.Utilities.Literals;
 
-public class StructureSharingInterpreter implements Interpreter{
-	private BlockingQueue<Thread> threads;
+public class StructureSharingInterpreterForkJoin implements Interpreter{
+	private BlockingQueue<ForkJoinTask<?>> tasks;
 	private static Queue<String[]> results;
+	private static ForkJoinPool executor;
 
 	@Override
 	public ReturnStructure executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
-		threads = new LinkedBlockingQueue<Thread>();
+		tasks = new LinkedBlockingQueue<ForkJoinTask<?>>();
 		results = new LinkedBlockingQueue<String[]>();
+		executor = new ForkJoinPool();
 		solve(query.getGoal(), rules, query.getMap(), new UnificationListHolder(), progDict);
 		
-		int threadCount = 0;
+		int count = 0;
 		try {
-			while(threads.size() != 0) {
-				threads.take().join();
-				threadCount++;
+			while(tasks.size() != 0) {
+				tasks.take().join();
+				count++;
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return new ReturnStructure(results.size() != 0 ? results : Literals.falseQuery, threadCount);
+		executor.shutdown();
+		return new ReturnStructure(results.size() != 0 ? results : Literals.falseQuery, count);
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map, UnificationListHolder list, HashMap<String, Integer> progDict){
@@ -94,14 +99,8 @@ public class StructureSharingInterpreter implements Interpreter{
 										repeat = true;
 									}
 									else {
-										Thread worker = new Thread() {
-											@Override 
-											public void run(){
-												solve(g, program, map, l, progDict);
-											}
-										};
-										worker.start();
-										threads.add(worker);
+										tasks.add(executor.submit(() -> { solve(g, program, map, l, progDict);
+										return null;}));
 									}
 								}
 							}
