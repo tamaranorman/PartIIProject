@@ -14,13 +14,13 @@ public class Comparison {
 	public static void main(String[] args) throws IOException{
 		Interpreter interpreter1 = new SingleThreadedInterpreter();
 		Interpreter interpreter2 = new CopyWhenSpanningInterpreter();
-		Interpreter interpreter3 = new StructureSharingInterpreter();
+		Interpreter interpreter3 = new CopyWhenSpanningInterpreterSequential();
 		
 		Parser parser = new BasicParser();
 		Scanner scanner = new Scanner(System.in);
 		
-		System.out.println("Welcome to my prolog interpreter:");
-		System.out.println("Please enter rules and queries prefixing queries with \"?-\"");
+		System.out.println("Welcome to my prolog interpreter comparison:");
+		System.out.println("Please enter rules and queries prefixing queries with \"?-\", all results putput in ms");
 		
 		Program prog = null;
 		HashMap<String, Integer> progDict = new HashMap<String, Integer>();
@@ -40,13 +40,14 @@ public class Comparison {
 						long finish;
 						for (int i = 0; i < 10; i++){
 							goal = parser.parseGoal(inputs[1]);
-							interpreter1.executeQuery(goal, prog, progDict);
+							s1.setThreads(interpreter1.executeQuery(goal, prog, progDict).getThreads());
+							
 
 							goal = parser.parseGoal(inputs[1]);
-							interpreter2.executeQuery(goal, prog, progDict);
+							s2.setThreads(interpreter2.executeQuery(goal, prog, progDict).getThreads());
 
 							goal = parser.parseGoal(inputs[1]);
-							interpreter3.executeQuery(goal, prog, progDict);
+							s3.setThreads(interpreter3.executeQuery(goal, prog, progDict).getThreads());
 						}
 
 						for (int i = 0; i < 100; i++){
@@ -71,10 +72,13 @@ public class Comparison {
 							s3.update(finish-start);
 							values[2][i] = finish-start;
 						}
-
-						s1.printResults();
-						s2.printResults();
-						s3.printResults();
+						
+						System.out.println("Sequential Interpreter:");
+						s1.printResults2();
+						System.out.println("Multithreaded Interpreter (Copying):");
+						s2.printResults2();
+						System.out.println("Sequential Copying Interpreter:");
+						s3.printResults2();
 
 						PrintWriter writer = new PrintWriter("output.txt", "UTF-8");
 						for(int i = 0; i < 100; i++) {

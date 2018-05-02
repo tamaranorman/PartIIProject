@@ -24,11 +24,13 @@ class TermVarTest {
 	
 	@Test
 	void creationOfTermVarWithVarNoAndInstance() {
+		TermVar setup = new TermVar();
+		int a = setup.getVarNo();
 		Term t = mock(Term.class);
-		TermVar result = new TermVar(t, 3);
+		TermVar result = new TermVar(t);
 		
 		assertNotNull(result);
-		assertEquals(3, result.getVarNo());
+		assertEquals(a+1, result.getVarNo());
 		assertFalse(result.isUnunified());
 	}
 	
@@ -44,7 +46,7 @@ class TermVarTest {
 	void printingAnAssignedVariable() {
 		Term t = mock(Term.class);
 		when(t.print()).thenReturn("test");
-		TermVar test = new TermVar(t, 2);
+		TermVar test = new TermVar(t);
 		
 		assertEquals("test", test.print());
 		
@@ -55,7 +57,7 @@ class TermVarTest {
 	void resettingAnAssignedVariable() {
 		Term t = mock(Term.class);
 		when(t.print()).thenReturn("test");
-		TermVar test = new TermVar(t, 2);
+		TermVar test = new TermVar(t);
 		
 		test.reset();
 		

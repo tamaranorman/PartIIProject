@@ -13,7 +13,7 @@ public class UI {
 
 	public static void main(String[] args) throws IOException {
 		Parser parser = new BasicParser();
-		Interpreter interpreter = new StructureSharingInterpreter();
+		Interpreter interpreter = new CopyWhenSpanningInterpreter();
 		Scanner scanner = new Scanner(System.in);
 		
 		System.out.println("Welcome to my prolog interpreter:");
@@ -27,7 +27,7 @@ public class UI {
 				if (input.startsWith("?-")){
 					try {
 						String[] inputs = input.split("-");
-						Queue<String[]> results = interpreter.executeQuery(parser.parseGoal(inputs[1]), prog, progDict);
+						Queue<String[]> results = interpreter.executeQuery(parser.parseGoal(inputs[1]), prog, progDict).getValues();
 						while(!results.isEmpty()) {
 							String[] values = results.remove();
 							for(String v : values) {

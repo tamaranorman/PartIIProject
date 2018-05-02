@@ -9,6 +9,7 @@ import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
 import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
+import PrologInterpreter.Structure.ReturnStructure;
 import PrologInterpreter.Structure.Term;
 import PrologInterpreter.Structure.TermVarMapping;
 import PrologInterpreter.Utilities.Literals;
@@ -19,18 +20,20 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 	private static Queue<String[]> results;
 	
 	@Override
-	public Queue<String[]> executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
+	public ReturnStructure executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict) {
 		threads = new LinkedBlockingQueue<Thread>();
 		results = new LinkedBlockingQueue<String[]>();
 		solve(query.getGoal(), rules, query.getMap(), progDict);
+		int threadCount = 0;
 		try {
 			while(threads.size() != 0) {
 				threads.take().join();
+				threadCount++;
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return results.size() != 0 ? results : Literals.falseQuery;
+		return new ReturnStructure(results.size() != 0 ? results : Literals.falseQuery, threadCount);
 	}
 
 	private void solve(Goal goal, final Program program, TermVarMapping map, HashMap<String, Integer> progDict) {
@@ -38,7 +41,7 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 		do {
 			repeat = false;
 			String goalAtomName = goal.getHead().getAtom().getAtomName();
-			if (Literals.MY_SET.contains(goalAtomName)){
+			if (Literals.arithmetic_operators.contains(goalAtomName)){
 				boolean unifies;
 				switch (goalAtomName){
 					case "is": 
@@ -90,7 +93,7 @@ public class CopyWhenSpanningInterpreter implements Interpreter {
 								m = map;
 								g = goal;
 							}
-							if(g.getHead().unify(c.getHead(), seq)){
+							if(c.getHead().unify(g.getHead(), seq)){
 								final Goal h = Goal.append(c.getBody(), g.getTail());
 								if(h == null) {
 									results.add(m.showAnswer());

@@ -13,10 +13,10 @@ public class TermVar extends Term {
 		varNo = timeStamp++;
 	}
 	
-	public TermVar(Term i, int n) {
+	public TermVar(Term i) {
 		super(true);
 		instance = i;
-		varNo = n;
+		varNo = timeStamp++;
 	}
 
 	@Override
@@ -26,9 +26,9 @@ public class TermVar extends Term {
 			return instance.unify(t, seq);
 		}
 		else {
-			if (seq == false && !t.containsVar) {
+			/*if (seq == false && !t.containsVar) {
 				this.containsVar = false;
-			}
+			}*/
 			if (seq) {
 				Trail.push(this);
 			}
@@ -60,22 +60,27 @@ public class TermVar extends Term {
 
 	@Override
 	public Term deepCopy(HashMap<Term, Term> map) {
-		if (!this.containsVar) {
+		/*if (!this.containsVar) {
 			return this;
-		}
+		}*/
 		if (map.containsKey(this)){
 			return map.get(this);
 		}
+		TermVar n;
 		if (instance == this){
-			TermVar n = new TermVar();
-			map.put(this, n);
-			return n;
+			n = new TermVar();
 		}
+		else 
+		{
+			n = new TermVar(instance.deepCopy(map));
+		}
+		/*
 		if (!instance.containsVar) {
 			this.containsVar = false;
-			return instance;
-		}
-		return new TermVar(instance.deepCopy(map), timeStamp++);
+			return this;
+		}*/
+		map.put(this, n);
+		return n;
 	}
 	
 	public Term reset(){

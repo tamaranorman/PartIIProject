@@ -8,6 +8,7 @@ import PrologInterpreter.Structure.Clause;
 import PrologInterpreter.Structure.Goal;
 import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
+import PrologInterpreter.Structure.ReturnStructure;
 import PrologInterpreter.Structure.TermVarMapping;
 import PrologInterpreter.Structure.Trail;
 import PrologInterpreter.Utilities.Literals;
@@ -20,10 +21,10 @@ public class SingleThreadedInterpreter implements Interpreter {
 	private static Queue<String[]> results;
 	
 	@Override
-	public Queue<String[]> executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict){
+	public ReturnStructure executeQuery(GoalMappingPair query, Program rules, HashMap<String, Integer> progDict){
 		results = new LinkedList<String[]>();
 		solve(query.getGoal(), rules, query.getMap(), progDict);
-		return results.size() != 0 ? results : Literals.falseQuery;
+		return new ReturnStructure(results.size() != 0 ? results: Literals.falseQuery, 0);
 	}
 	
 	private void solve (Goal goal, Program program, TermVarMapping map, HashMap<String, Integer> progDict){
@@ -31,7 +32,7 @@ public class SingleThreadedInterpreter implements Interpreter {
 		do {
 			repeat = false;
 			String goalAtomName = goal.getHead().getAtom().getAtomName();
-			if (Literals.MY_SET.contains(goalAtomName)){
+			if (Literals.arithmetic_operators.contains(goalAtomName)){
 				boolean unifies;
 				switch (goalAtomName){
 					case "is": 
@@ -72,13 +73,13 @@ public class SingleThreadedInterpreter implements Interpreter {
 							i--;
 						}
 						Trail.undo(t);
-						if(goal.getHead().unify(c.getHead(), seq)){
+						if(c.getHead().unify(goal.getHead(), seq)){
 							Goal g = Goal.append(c.getBody(), goal.getTail());
 							if(g == null) {
 								results.add(map.showAnswer());
 							}
 							else{
-								if (q.getTail() == null){
+								if (q.getTail() == null || i == 0){
 									goal = g;
 									repeat = true;
 								}

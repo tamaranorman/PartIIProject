@@ -10,3 +10,4 @@ jars/*
 output.txt
 target/*
 /target/
+/bin/

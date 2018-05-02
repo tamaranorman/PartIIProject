@@ -201,21 +201,21 @@ public class TermCons extends Term{
 			return this;
 		}
 		Term[] argsCopy = new Term[arity];
-		boolean seenVar = false;
+		//boolean seenVar = false;
 		for (int i = 0; i < arity; i ++){
-			if (args[i].containsVar) {
+			//if (args[i].containsVar) {
 				argsCopy[i] = args[i].deepCopy(map);
-				seenVar = true;
-			}
-			else {
+				//seenVar = true;
+			//}
+			/*else {
 				argsCopy[i] = args[i];
-			}
+			}*/
 		}
-		if (seenVar) {
+		//if (seenVar) {
 			return new TermCons(atom, arity, argsCopy, containsVar);
-		}
-		containsVar = false;
-		return this;
+		//}
+		//containsVar = false;
+		//return this;
 	}
 
 	@Override

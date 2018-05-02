@@ -27,6 +27,8 @@ import PrologInterpreter.Structure.Program;
 class OverallCorrectness {
 	@Test
 	void comparison() throws IOException{
+		boolean exception = false;
+		
 		Interpreter interpreter1 = new SingleThreadedInterpreter();
 		Interpreter interpreter2 = new CopyWhenSpanningInterpreter();
 		Interpreter interpreter3 = new StructureSharingInterpreter();
@@ -47,19 +49,19 @@ class OverallCorrectness {
 						GoalMappingPair goal;
 
 						goal = parser.parseGoal(inputs[1]);
-						Queue<String[]> result1 = interpreter1.executeQuery(goal, prog, progDict);
+						Queue<String[]> result1 = interpreter1.executeQuery(goal, prog, progDict).getValues();
 						results.addAll(result1);
 
 						goal = parser.parseGoal(inputs[1]);
-						Queue<String[]> result2 = interpreter2.executeQuery(goal, prog, progDict);
+						Queue<String[]> result2 = interpreter2.executeQuery(goal, prog, progDict).getValues();
 
 						goal = parser.parseGoal(inputs[1]);
-						Queue<String[]> result3 = interpreter3.executeQuery(goal, prog, progDict);
+						Queue<String[]> result3 = interpreter3.executeQuery(goal, prog, progDict).getValues();
 
 						assertTrue(checkEquality(result1, result2, result3));
 
 					} catch (PrologParserException e) {
-						System.out.println("Query couldn't be executed " + e.getMessage());
+						exception = true;
 					}
 				} else {
 					try {
@@ -68,12 +70,13 @@ class OverallCorrectness {
 							prog = c;
 						}
 					} catch (PrologParserException e) {
-						System.out.println("Line " + input + " couldn't be added. " + e.getMessage());
+						exception = true;
 					}
 				}
 			}
 		}
 		bufferedReader.close();
+		assertFalse(exception);
 		assertTrue(checkMatches(results));
 	}
 
@@ -85,51 +88,23 @@ class OverallCorrectness {
 			return true;
 		}
 		int sizeResults = result1.size();
-		if (sizeResults == 0) {
-			return true;
-		}
-		else if (sizeResults == 1) {
-			String[] r1 = result1.remove();
-			String[] r2 = result2.remove();
-			String[] r3 = result3.remove();
-			for(int i = 0; i < r1.length; i++) {
-				if(!r1[i].equals(r2[i]) || !r1[i].equals(r3[i])) {
+		int sizeVariables = result1.peek().length;
+		String[][] v1 = result1.toArray(new String[0][0]);
+		String[][] v2 = result2.toArray(new String[0][0]);
+		String[][] v3 = result3.toArray(new String[0][0]);
+		Arrays.sort(v1, c);
+		Arrays.sort(v2, c);
+		Arrays.sort(v3, c);
+		for(int j = 0; j < sizeResults; j ++) {
+			for(int i = 0; i < sizeVariables; i++) {
+				if(!v1[j][i].equals(v2[j][i]) || !v1[j][i].equals(v3[j][i])) {
 					return false;
 				}
 			}
-			return true;
 		}
-		else {
-			int sizeVariables = result1.peek().length;
-			String[][] v1 = new String[sizeResults][sizeVariables];
-			String[][] v2 = new String[sizeResults][sizeVariables];
-			String[][] v3 = new String[sizeResults][sizeVariables];
-			for(int i = 0; i < sizeResults; i++) {
-				v1[i] = result1.remove();
-				v2[i] = result2.remove();
-				v3[i] = result3.remove();
-			}
-			Comparator<String[]> c = new Comparator<String[]>() {
-				@Override
-				public int compare(String[] o1, String[] o2) {
-					String quantityOne = o1[0];
-					String quantityTwo = o2[0];
-					return quantityOne.compareTo(quantityTwo);
-				}};
-			Arrays.sort(v1, c);
-			Arrays.sort(v2, c);
-			Arrays.sort(v3, c);
-			for(int j = 0; j < sizeResults; j ++) {
-				for(int i = 0; i < sizeVariables; i++) {
-					if(!v1[j][i].equals(v2[j][i]) || !v1[j][i].equals(v3[j][i])) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
+		return true;
 	}
-	
+
 	private boolean checkMatches(LinkedList<String[]> results) throws IOException {
 		FileReader f = new FileReader("correctnessTestsOutput.txt");
 		BufferedReader bufferedReader = new BufferedReader(f);
@@ -149,5 +124,13 @@ class OverallCorrectness {
 		bufferedReader.close();
 		return true;
 	}
+	
+	private Comparator<String[]> c = new Comparator<String[]>() {
+		@Override
+		public int compare(String[] o1, String[] o2) {
+			String quantityOne = o1[0];
+			String quantityTwo = o2[0];
+			return quantityOne.compareTo(quantityTwo);
+		}};
 
 }

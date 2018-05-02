@@ -1,15 +1,20 @@
 package PrologInterpreter;
 
+import java.text.DecimalFormat;
+
 public class StatsContainer {
 	private long mean;
-	private long standDev;
+	private long variance;
 	private long min;
 	private long max;
 	private int n;
+	private int threads;
+	
+	private DecimalFormat f = new DecimalFormat("#0.000");
 	
 	public StatsContainer() {
 		mean = 0;
-		standDev = 0;
+		variance = 0;
 		min = Long.MAX_VALUE;
 		max = Long.MIN_VALUE;
 	}
@@ -18,7 +23,7 @@ public class StatsContainer {
 		n++;
 		long oldMean = mean;
 		mean = mean + (nextResult - mean)/n;
-		standDev = standDev + (nextResult - oldMean) * (nextResult - mean);
+		variance = variance + (nextResult - oldMean) * (nextResult - mean);
 		if (nextResult < min) {
 			min = nextResult;
 		}
@@ -28,23 +33,27 @@ public class StatsContainer {
 	}
 	
 	public void printResults() {
-		System.out.println("Mean: " + mean);
-		System.out.println("Standard Deviation: " + standDev);
-		System.out.println("Minimum: " + min);
-		System.out.println("Maximum: " + max);
+		long nanoToMilli = 1000000;
+		System.out.println("Mean: " + f.format((double)mean/nanoToMilli));
+		variance = variance/nanoToMilli;
+		System.out.println("Variance: " + f.format((double)variance/nanoToMilli));
+		System.out.println("Minimum: " + f.format((double)min/nanoToMilli));
+		System.out.println("Maximum: " + f.format((double)max/nanoToMilli));
+		System.out.println("Threads used: " + threads);
 	}
 	
-	public long getMean() {
-		return mean;
+	public void printResults2() {
+		long nanoToMilli = 1000000;
+		System.out.println(f.format((double)mean/nanoToMilli));
+		variance = variance/nanoToMilli;
+		System.out.println(f.format((double)variance/nanoToMilli));
+		System.out.println(f.format((double)min/nanoToMilli));
+		System.out.println(f.format((double)max/nanoToMilli));
+		System.out.println(threads);
 	}
-	public long getStandDev() {
-		return standDev;
-	}
-	public long getMin() {
-		return min;
-	}
-	public long getMax() {
-		return max;
+
+	public void setThreads(int threads) {
+		this.threads = threads;
 	}
 
 }
