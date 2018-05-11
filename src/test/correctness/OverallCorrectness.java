@@ -16,11 +16,11 @@ import org.junit.jupiter.api.Test;
 import com.igormaznitsa.prologparser.exceptions.PrologParserException;
 
 import PrologInterpreter.BasicParser;
-import PrologInterpreter.CopyWhenSpanningInterpreter;
+import PrologInterpreter.CopyWhenSpanningInterpreterForkJoin;
 import PrologInterpreter.Interpreter;
 import PrologInterpreter.Parser;
 import PrologInterpreter.SingleThreadedInterpreter;
-import PrologInterpreter.StructureSharingInterpreter;
+import PrologInterpreter.StructureSharingInterpreterForkJoin;
 import PrologInterpreter.Structure.GoalMappingPair;
 import PrologInterpreter.Structure.Program;
 
@@ -30,8 +30,8 @@ class OverallCorrectness {
 		boolean exception = false;
 		
 		Interpreter interpreter1 = new SingleThreadedInterpreter();
-		Interpreter interpreter2 = new CopyWhenSpanningInterpreter();
-		Interpreter interpreter3 = new StructureSharingInterpreter();
+		Interpreter interpreter2 = new CopyWhenSpanningInterpreterForkJoin();
+		Interpreter interpreter3 = new StructureSharingInterpreterForkJoin();
 		
 		Parser parser = new BasicParser();
 		FileReader f = new FileReader("correctnessTestsInput.txt");

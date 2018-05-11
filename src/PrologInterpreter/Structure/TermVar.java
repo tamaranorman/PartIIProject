@@ -69,18 +69,21 @@ public class TermVar extends Term {
 		TermVar n;
 		if (instance == this){
 			n = new TermVar();
+			map.put(this, n);
+			return n;
 		}
 		else 
 		{
 			n = new TermVar(instance.deepCopy(map));
+			return n;
 		}
 		/*
 		if (!instance.containsVar) {
 			this.containsVar = false;
 			return this;
 		}*/
-		map.put(this, n);
-		return n;
+		//map.put(this, n);
+		//return n;
 	}
 	
 	public Term reset(){

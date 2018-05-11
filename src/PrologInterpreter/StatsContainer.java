@@ -35,11 +35,12 @@ public class StatsContainer {
 	public void printResults() {
 		long nanoToMilli = 1000000;
 		System.out.println("Mean: " + f.format((double)mean/nanoToMilli));
-		variance = variance/nanoToMilli;
+		variance = variance/(nanoToMilli*100);
 		System.out.println("Variance: " + f.format((double)variance/nanoToMilli));
+		System.out.println("Standard deviation: " + f.format(Math.sqrt((double) variance/nanoToMilli)));
 		System.out.println("Minimum: " + f.format((double)min/nanoToMilli));
 		System.out.println("Maximum: " + f.format((double)max/nanoToMilli));
-		System.out.println("Threads used: " + threads);
+		System.out.println("Units of work: " + threads);
 	}
 	
 	public void printResults2() {
@@ -51,9 +52,8 @@ public class StatsContainer {
 		System.out.println(f.format((double)max/nanoToMilli));
 		System.out.println(threads);
 	}
-
+	
 	public void setThreads(int threads) {
 		this.threads = threads;
 	}
-
 }
